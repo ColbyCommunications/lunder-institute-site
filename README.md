@@ -1,4 +1,6 @@
-# WordPress template for Platform.sh
+# Lunder Institute
+
+## WordPress template for Platform.sh
 
 This project provides a starter kit for Colby College WordPress projects (forked from University of Missouri) hosted on Platform.sh. It is built using Composer, via the popular <a href="https://github.com/johnpbloch/wordpress">johnpbloch/wordpress</a> script.
 
@@ -9,17 +11,17 @@ This project provides a starter kit for Colby College WordPress projects (forked
 3. Clone on local machine
 4. Add [sitename] to the following files, replacing placeholder text:
 
--   composer.json
--   .platform.app.yaml
--   .lando.yaml
--   README.md
+- composer.json
+- .platform.app.yaml
+- .lando.yaml
+- README.md
 
 5. Create an upstream to the starter repo via `git remote add upstream https://github.com/ColbyCommunications/platformsh-wp-starter`
 
 6. Link with Platform.sh:
 
--   Create blank project in Platform.sh console
--   Add Platform.sh repo as remote: `platform project:set-remote [project_id]`
+- Create blank project in Platform.sh console
+- Add Platform.sh repo as remote: `platform project:set-remote [project_id]`
 
 ## How to Navigate the Project
 
