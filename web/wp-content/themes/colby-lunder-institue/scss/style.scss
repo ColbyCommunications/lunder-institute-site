@@ -1,0 +1,135 @@
+/*
+Theme Name: 75 State Street
+Description: Child Theme for Avesta
+Version: 1.1
+Author: Neil Arnold
+Author URI: http://www.neilarnold.com
+Template: enfold
+*/
+
+@import "variables/variables";
+@import "variables/mixins";
+
+@import "elements/accessibility";
+@import "elements/header";
+@import "elements/main_nav";
+@import "elements/top_bar";
+@import "elements/page";
+@import "elements/footer";
+@import "elements/gravity";
+@import "elements/slider";
+@import "elements/typography";
+@import "elements/search_form";
+@import "elements/media";
+@import "elements/tables";
+// @import "paragraphs/paragraphs";
+
+/* Home --- --- --- */
+
+.avia-slider-testimonials .avia-testimonial-meta .avia-testimonial-image {
+    width: 80px;
+    height: 80px;
+}
+
+.read-more-link {
+    text-align: center;
+    text-transform: lowercase;
+    margin-top: 1em;
+}
+
+.gform_confirmation_wrapper {
+    margin: 20px 0;
+    padding: 20px 0;
+    border-top: solid 1px #990000;
+    border-bottom: solid 1px #990000;
+    color: #990000;
+}
+
+/* END - Home --- --- --- */
+
+#top .av_header_transparency .avia-menu-fx {
+    bottom: 0;
+}
+
+
+// .slideshow_align_caption { vertical-align: top; }
+.avia-section { min-height: 0; }
+
+/* Global & Theme Overrides --- --- --- */
+// .alternate_color strong, .alternate_color b { color: #ffffff !important; }
+
+.avia-image-container-inner, .avia_image, .av-image-caption-overlay {
+    border-radius: 0;
+}
+
+div .av_one_fourth {
+    margin-left: 3%;
+    width: 22.75%;
+}
+
+.av-tab-section-tab-title-container {
+    padding-top: 0;
+}
+.special_amp {
+    color: inherit !important;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+}
+
+#top .av-flex-placeholder { width: 2%; }
+
+.template-page .entry-content-wrapper h2 { text-transform: none; }
+.avia_transform a:hover .image-overlay {
+    opacity: 0.4 !important;
+}
+
+
+.avia_textblock {
+    h3 {
+        color: #919191;
+    }
+    ul {
+        margin-bottom: 15px;
+        li {
+            position: relative;
+            list-style: none;
+            line-height: 1.4em;
+            margin-left: 1.5em;
+            padding: 5px 0;
+            &:before {
+                content: "\f058";
+                color: #1e7ca9;
+                font-size: 1em;
+                font-family: FontAwesome;
+                margin-right: 1em;
+                position: absolute;
+                top: 0.3em;
+                left: -1.5em;
+            }
+            ul {
+                margin-top: 10px;
+                li {
+                    line-height: 0.9em;
+                    &:before {
+                        content: "\f111";
+                        font-size: 0.4em;
+                        top: 0.6em;
+                        left: -2.0em;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+.text-sep-cat { display: none; }
+
+
+/* From Enfold Theme Support */
+@media only screen and (min-width: 990px) {
+    .hide-on-desktop { display: none !important; }
+}
+/* END - Global --- --- --- */

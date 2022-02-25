@@ -1,0 +1,27 @@
+
+/* Footer --- --- --- */
+#footer {
+    border: none;
+    .widget {
+        font-size: 13px;
+        margin: 10px 0;
+    }
+    hr {
+        border: solid #585151;
+        border-width: 1px 0 0;
+        margin: 10px 0;
+    }
+    p {
+        // line-height: 1.5em;
+        // margin: 3px 0;
+    }
+}
+
+#socket {
+    border: none;
+    font-size: 15px;
+}
+#socket .copyright {
+    font-size: 13px;
+}
+/* END - Footer --- --- --- */

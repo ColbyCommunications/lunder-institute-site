@@ -1,0 +1,24 @@
+
+
+table.pricing-table {
+    tr {
+        &:nth-child(even) {
+            color: #333333;
+            background-color: #ffffff;
+        }
+        &:nth-child(odd) {
+            color: #333333;
+            background-color: #fafafa;
+        }
+        &.avia-heading-row {
+            background-color: #0b5071;
+            color: #ffffff;
+            th:first-child {
+                font-size: 1.3em;
+            }
+        }
+        td {
+
+        }
+    }
+}

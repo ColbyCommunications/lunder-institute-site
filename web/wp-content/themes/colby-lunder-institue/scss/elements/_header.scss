@@ -1,0 +1,56 @@
+
+/* Header, Logo --- --- --- */
+// #header_main .av-logo-container { display: none; }
+// @media only screen and (max-width: 989px) {
+//     #header_main .av-logo-container { display: block; }
+//     .responsive .logo a { display: none; }
+// }
+.logo img {
+    padding: 10px 0;
+    @media #{$phone_media} {
+        padding-right: 30px;
+    }
+}
+// @media only screen and (max-width: 989px) and (min-width: 768px) {
+//   .responsive.html_mobile_menu_tablet #top #wrap_all #header {
+//       background-color: #ffffff !important;
+//   }
+// }
+/* END -  Header, Logo --- --- --- */
+
+
+/* Title Bar & Breadcrumb --- --- --- */
+.html_header_top.html_header_topbar_active.html_header_sticky #top #main {
+        padding-top: 130px;
+}
+#top .alternate_color.title_container,
+#top .title_container .container {
+    background-color: $color__primary;
+    color: #ffffff;
+}
+.alternate_color .breadcrumb a { color: #ffffff; }
+#top .alternate_color.title_container .main-title a {
+    color: #ffffff;
+    font-size: 19px;
+}
+.alternate_color .breadcrumb { color: #ffffff; }
+/* END - Title Bar & Breadcrumb --- --- --- */
+
+@media only screen and (max-width: 767px) {
+  nav.main_menu {
+      display: block !important;
+  }
+}
+@media only screen and (max-width: 989px) {
+    // .responsive #top .av_mobile_menu_tablet .av-main-nav .menu-item-avia-special a:after {
+    //     content: 'Menu';
+    //     color: #444;
+    //     display: block;
+    //     line-height: 10px;
+    //     margin-top: -20px;
+    // }
+}
+
+.sub_menu li {
+    border: none;
+}

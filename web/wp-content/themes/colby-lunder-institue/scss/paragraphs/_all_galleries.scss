@@ -1,0 +1,9 @@
+
+.p-all-galleries {
+    &__container {
+        @include flexbox;
+        &__item {
+            width: 33.33%;
+        }
+    }
+}

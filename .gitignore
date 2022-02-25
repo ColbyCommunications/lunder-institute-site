@@ -42,6 +42,10 @@
 !/web/wp-content/plugins/jet-style-manager
 !/web/wp-content/plugins/jet-theme-core
 
+# Lunder
+!/web/wp-content/themes/colby-lunder-institue
+!/web/wp-content/themes/enfold
+
 # baseinstall
 !/web/wp-content/themes/baseinstall
 

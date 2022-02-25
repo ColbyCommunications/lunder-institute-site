@@ -1,0 +1,300 @@
+/*
+Theme Name: Lunder Institue 2019
+Description: Child Theme for Colby using Enfold
+Version: 1.1
+Author: Neil Arnold
+Author URI: http://www.neilarnold.com
+Template: enfold
+*/
+
+
+/* Header, Logo --- --- --- */
+#header_main .logo img {
+	padding: 4.5% 0 ;
+}
+/* END -  Header, Logo --- --- --- */
+
+/* Header, Top Bar --- --- --- */
+#header_meta,
+#top .av_header_transparency #header_meta {
+	background-color: #686059 !important;
+}
+.header_color .phone-info,
+.header_color .phone-info a,
+.header_color .social_bookmarks a,
+.header_color .sub_menu > ul > li > a {
+	color: #ffffff !important;
+	font-size: 12px;
+	font-weight: normal;
+}
+.phone-info span:before,
+#top .av_header_transparency .phone-info.with_nav span:before {
+	content: '\f041';
+	font-family: FontAwesome;
+	color: #ffffff;
+	display: inline-block;
+	padding-right: 5px;
+	font-size: 15px;
+	font-weight: normal;
+	position: relative;
+	top: 1px;
+}
+
+#top #wrap_all .sub_menu > ul > li > a,
+#top #wrap_all .av_header_transparency .sub_menu > ul > li > a {
+	font-weight: 600;
+	color: #ffffff;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.menu-icon:before {
+	font-family: FontAwesome;
+	color: #ffffff;
+	display: inline-block;
+	padding-right: 6px;
+	font-size: 14px;
+	font-weight: normal;
+	position: relative;
+	top: 0px;
+}
+.menu-icon-mail:before { content: '\f0e0'; }
+.menu-icon-form:before { content: '\f0f6'; }
+
+/* END -  Header, Top Bar --- --- --- */
+
+/* Typography --- --- --- */
+.main_color h2 { font-weight: normal; }
+/* END - Typography --- --- --- */
+
+/* Header, Primary Nav --- --- --- */
+#top .av_header_glassy.av_header_transparency .header_bg {
+	background-color: #f6f6f6;
+	opacity: 0.8;
+	filter: alpha(=8);
+}
+
+#header_main .container_wrap { border-top: none; }
+.header_color .main_menu ul:first-child > li > a
+{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 18px;
+	font-weight: normal;
+	text-transform: uppercase;
+}
+.av-main-nav > li > a {
+	padding: 0 17px;
+}
+.header_color .avia-menu-fx {
+	/*background-color: #a98820;*/
+}
+
+.main_menu {
+	background-image: url('/wp-content/uploads/2017/04/favicon.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: 0 -50px;
+	-webkit-transition: background-position 0.5s ease; /* Safari */
+	transition: background-position 0.5s ease;
+}
+.header-scrolled .main_menu {
+	background-position: 0 0;
+}
+/* END - Header, Primary Nav --- --- --- */
+
+/* Title Bar & Breadcrumb --- --- --- */
+.html_header_top.html_header_topbar_active.html_header_sticky #top #main {
+		padding-top: 130px;
+}
+#top .alternate_color.title_container,
+#top .title_container .container {
+	background-color: #82b1a2;
+	color: #ffffff;
+}
+.alternate_color .breadcrumb a { color: #ffffff; }
+#top .alternate_color.title_container .main-title a {
+	color: #ffffff;
+	font-size: 19px;
+}
+.alternate_color .breadcrumb { color: #ffffff; }
+/* END - Title Bar & Breadcrumb --- --- --- */
+
+/* Page Title --- --- --- */
+.responsive .page-title .container {
+	padding: 0;
+	max-width: 100%;
+}
+.responsive .page-title .container .content {
+	/*padding-top: 0;*/
+	padding-bottom: 0;
+}
+body .page-title .av-special-heading .av-special-heading-tag {
+	/* font-family: 'Roboto', sans-serif; */
+	margin-top: 330px;
+	color: #605371;
+	background-color: rgba(239, 239, 239, 0.7);
+	font-size: 44px;
+	width: 100%;
+	text-align: right;
+	padding-right: 0.5em;
+	text-transform: none;
+	font-weight: 200;
+}
+.page-title .special_amp {
+	font-size: 1.0em;
+	font-family: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+}
+@media only screen and (max-width: 767px) {
+	.responsive #top #wrap_all .page-title .container {
+		width: 100%;
+		max-width: 100%;
+		min-height: auto;
+	}
+	body .page-title .av-special-heading .av-special-heading-tag {
+		margin-top: 100px;
+		font-size: 28px;
+	}
+}
+/* END - Page Title --- --- --- */
+
+/* Page Sub Title --- --- --- */
+.responsive .page-subtitle .container {
+	padding: 0;
+	max-width: 100%;
+}
+.responsive .page-subtitle .container .content {
+	padding-bottom: 0;
+}
+body .page-subtitle .av-special-heading .av-special-heading-tag {
+	margin-top: 500px;
+	margin-bottom: 30px;
+	color: #605371;
+	background-color: rgba(239, 239, 239, 0.7);
+	font-size: 93px;
+	/* font-family: 'Roboto', sans-serif; */
+	font-weight: 100;
+	letter-spacing: -2px;
+	width: 100%;
+	text-align: center;
+}
+.page-subtitle .special_amp {
+	font-size: 1.0em;
+	font-family: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+}
+@media only screen and (max-width: 767px) {
+	.responsive #top #wrap_all .page-subtitle .container {
+		width: 100%;
+		max-width: 100%;
+		min-height: auto;
+	}
+	body .page-subtitle .av-special-heading .av-special-heading-tag {
+		margin-top: 100px;
+		margin-bottom: 10px;
+		font-size: 28px;
+	}
+}
+/* END - Page Title --- --- --- */
+
+/* Footer --- --- --- */
+#footer .widget {
+	margin: 10px 0;
+}
+
+#footer .image-overlay{
+	display: none !important;
+}
+
+#socket { font-size: 13px; }
+/* END - Footer --- --- --- */
+
+/* Photo Gallery --- --- --- */
+#top #wrap_all .avia-gallery-1 .avia-gallery-thumb a {
+	width: calc( 20% - 10px ) !important;
+	margin: 5px;
+}
+#top div .avia-gallery img {
+	padding: 2px;
+	border: none;
+}
+/* END - Photo Gallery --- --- --- */
+
+/* Global & Theme Overrides --- --- --- */
+.av-styling-circle  img { border: solid 5px #ffffff; }
+
+.template-page .entry-content-wrapper h2 { text-transform: none; }
+.avia_transform a:hover .image-overlay {
+	opacity: 0.4 !important;
+}
+
+.special_amp {
+	font-family: inherit;
+	font-style: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	font-weight: inherit;
+	color: inherit!important;
+}
+
+/* Page Title --- --- --- */
+.responsive .page-title .container {
+  padding: 0;
+  max-width: 100%;
+}
+.responsive .page-title .container .content {
+  /*padding-top: 0;*/
+  padding-bottom: 0;
+}
+body .page-title .av-special-heading .av-special-heading-tag {
+  margin-top: 260px;
+  color: #696059;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 32px;
+  width: 100%;
+  text-align: right;
+  padding: 0.2em 0.5em;
+  text-transform: uppercase;
+}
+.page-title .special_amp {
+  font-size: 1em;
+  font-family: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+}
+@media only screen and (max-width: 767px) {
+  .responsive #top #wrap_all .page-title .container {
+    width: 100%;
+    max-width: 100%;
+    min-height: auto;
+  }
+  body .page-title .av-special-heading .av-special-heading-tag {
+    margin-top: 100px;
+    font-size: 34px;
+  }
+}
+/* END - Page Title --- --- --- */
+
+/* From Enfold Theme Support */
+@media only screen and (min-width: 990px) {
+	.hide-on-desktop { display: none !important; }
+}
+/* END - Global --- --- --- */
+
+/* Search --- --- --- */
+.search-results article {
+	border-bottom: solid 1px #cccccc;
+	margin-bottom: 20px;
+}
+#top .template-search.content .entry-content-wrapper {
+	padding-bottom: 20px;
+}
+
+.main_color .search-result-counter {
+	background-color: #356797;
+	color: #ffffff;
+}
+
+/* END - Search --- --- --- */

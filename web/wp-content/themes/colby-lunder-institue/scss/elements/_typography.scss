@@ -1,0 +1,41 @@
+
+
+h2.av-special-heading-tag  {
+    font-weight: 600 !important;
+}
+.av-special-heading {
+    margin-top: 25px;
+}
+
+.indent {
+    padding: 0 10%;
+    @media #{$tablet_media} {
+        padding: 0 10px;
+    }
+    @media #{$phone_media} {
+        padding: 0;
+    }
+}
+
+.narrow {
+    padding: 0 20%;
+    @media #{$tablet_media} {
+        padding: 0 10px;
+    }
+    @media #{$phone_media} {
+        padding: 0;
+    }
+}
+
+.big-and-light {
+    font-weight: 300;
+    line-height: 1.4em;
+    margin: 5% 10%;
+}
+
+
+input[type="submit"], #submit, .button {
+    margin: 10px 0;
+    border-radius: 4px;
+    display: inline-block;
+}

@@ -1,0 +1,22 @@
+@import "variables/variables";
+@import "variables/mixins";
+
+
+body.mce-content-body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+}
+
+
+// a.avia-button,
+a.button {
+    background-color: #1e7ca9 !important;
+    font-weight: 600;
+}
+a.avia-button:hover,
+a.button:hover {
+    background-color: #7da7ad;
+}
+.avia-button .avia_button_icon.avia_button_icon_right {
+    top: 0.11em;
+}

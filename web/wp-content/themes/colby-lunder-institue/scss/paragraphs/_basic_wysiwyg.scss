@@ -1,0 +1,35 @@
+
+.p-basic-wysiwyg {
+    font-size: 16px;
+    @media #{$phone_media} {
+        font-size: 14px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    table {
+        margin: 0;
+    }
+
+    ul {
+        @media #{$phone_media} {
+            margin-bottom: 0;
+        }
+        li {
+            position: relative;
+            list-style: none;
+            &:before {
+                content: "\f054";
+                font-size: 0.9em;
+                font-family: FontAwesome;
+                color: $color__primary;
+                margin-right: 1em;
+                position: absolute;
+                top: 0.15em;
+                left: -1.3em;
+            }
+        }
+    }
+}

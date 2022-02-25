@@ -1,0 +1,91 @@
+
+
+.search-form-container {
+    @include bust-out;
+    background-color: #eee4d9;
+    .search-form {
+        @include flexbox;
+        @include justify-content(center);
+        @include align-items(center);
+        padding-top: 30px;
+        padding-bottom: 30px;
+        @media #{$tablet_media} {
+        }
+        @media #{$phone_media} {
+            @include flex-direction(column);
+        }
+        &__label {
+            text-align: center;
+            font-weight: 600;
+            font-size: 33px;
+            padding-top: 30px;
+            color: #9b8d80;
+            text-transform: uppercase;
+            &:before {
+                font-family: 'entypo-fontello';
+                font-weight: normal;
+                color: $color__primary;
+                content: '\e8b8';
+                display: inline-block;
+            }
+            @media #{$tablet_media} {
+                font-size: 23px;
+            }
+
+        }
+        &__input {
+            margin: 0 10px;
+            height: 42px;
+            @include flex-grow(1);
+            @media #{$tablet_media} {
+                margin: 0 5px;
+            }
+            @media #{$phone_media} {
+                min-width: 100%;
+                margin: 0 0 10px 0;
+            }
+            &:first-child { margin-left: 0; }
+            &:last-of-type {
+                margin-right: 0;
+                @include flex-grow(0);
+            }
+
+            label {
+                @extend .screen-reader-text;
+            }
+            select {
+                cursor: pointer;
+                height: 100%;
+                outline: none;
+                border: solid 1px #cbc9c9;
+                color: #a3a3a3;
+                padding-right: 4em !important;
+                @media #{$phone_media} {
+                    margin: 0 0 10px 0;
+                }
+            }
+            input {
+                @include border-radius(5px);
+                height: 100%;
+                width: 100%;
+                color: #a3a3a3;
+                @media #{$phone_media} {
+                }
+                &[type="text"] {
+                    background-color: #ffffff;
+                    border: none;
+                    border-bottom: solid 1px #cbc9c9;
+                }
+                &[type="submit"] {
+                    @include solid-button(#ffffff, $color__primary);
+                    @include border-radius(5px);
+                    padding: 5px 20px;
+                    font-size: 16px;
+                    text-align: center;
+                    height: 100%;
+                }
+            }
+        }
+
+    }
+}

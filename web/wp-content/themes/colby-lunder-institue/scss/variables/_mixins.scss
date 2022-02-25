@@ -1,0 +1,341 @@
+@mixin bust-out {
+    margin: 0 calc(50% - 50vw);
+    width: 100vw !important;
+}
+
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  &:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: ($height / $width) * 100%;
+  }
+  > .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+
+
+@mixin solid-button($color_text, $color_bg) {
+    @include border-radius(2px);
+    display: inline-block;
+    background-color: $color_bg;
+    border: solid 1px $color_bg;
+    padding: 15px 40px;
+    color: $color_text;
+    text-transform: uppercase;
+    transition: all 250ms ease-in-out;
+
+    @media #{$tablet_media} {
+        padding: 7px 20px;
+    }
+    @media #{$phone_media} {
+        padding: 5px 8px;
+    }
+    &:visited {
+    color: $color_text;
+    }
+    &:hover {
+        text-decoration: none;
+        background-color: $color_text;
+        border: solid 1px $color_bg;
+        color: $color_bg;
+    }
+}
+
+@mixin outline-button($color_text, $color_bg: transparent) {
+  @include border-radius(2px);
+  display: inline-block;
+  background-color: $color_bg;
+  border: solid 1px $color_text;
+  padding: 10px 16px;
+  color: $color_text;
+  text-transform: uppercase;
+  transition: all 250ms ease-in-out;
+
+  @media #{$phone_media} {
+    padding: 5px 8px;
+  }
+  &:visited {
+    color: $color_text;
+  }
+  &:after {
+    content: '\f105';
+    font-family: FontAwesome;
+    display: inline-block;
+    opacity: 0;
+    padding-left: 0;
+    width: 0;
+    transition: all 250ms ease-in-out;
+  }
+  &:hover {
+    &:after {
+      padding-left: 0.5em;
+      opacity: 1;
+      width: 1em;
+    }
+  }
+}
+
+/*************************
+ * FLEXBOX
+ * Values: flex | inline-flex
+ * Default: flex
+ * USAGE: @include flexbox(flex);
+ ************************/
+
+@mixin flexbox($value: flex) {
+	@if $value == inline-flex {
+		display: -webkit-inline-box;
+		display: -webkit-inline-flex;
+		display: -moz-inline-flex;
+		display: -ms-inline-flexbox;
+		display: inline-flex;
+	}
+	@else {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -moz-flex;
+		display: -ms-flexbox;
+		display: flex;
+	}
+}
+
+/*************************
+ * FLEXBOX WRAP
+ * Values: nowrap | wrap | wrap-reverse
+ * Default: nowrap
+ * USAGE: @include flex-wrap(nowrap)
+ ************************/
+
+@mixin flex-wrap($value: nowrap) {
+	// No Webkit Box fallback.
+	-webkit-flex-wrap: $value;
+	-moz-flex-wrap: $value;
+
+	@if $value == nowrap {
+		-ms-flex-wrap: none;
+	}
+	@else {
+		-ms-flex-wrap: $value;
+	}
+
+	flex-wrap: $value;
+}
+
+/*************************
+ * FLEXBOX DIRECTION
+ * Values: row | row-reverse | column | column-reverse
+ * Default: row
+ * USAGE: @include flex-direction(row)
+ ************************/
+
+@mixin flex-direction($value: row) {
+	@if $value == row-reverse {
+		-webkit-box-direction: reverse;
+		-webkit-box-orient: horizontal;
+	}
+	@else if $value == column {
+		-webkit-box-direction: normal;
+		-webkit-box-orient: vertical;
+	}
+	@else if $value == column-reverse {
+		-webkit-box-direction: reverse;
+		-webkit-box-orient: vertical;
+	}
+	@else {
+		-webkit-box-direction: normal;
+		-webkit-box-orient: horizontal;
+	}
+
+	-webkit-flex-direction: $value;
+	-moz-flex-direction: $value;
+	-ms-flex-direction: $value;
+	flex-direction: $value;
+}
+
+/*************************
+ * FLEXBOX JUSTIFY CONTENT
+ * Values: flex-start | flex-end | center | space-between | space-around
+ * Default: flexstart
+ * USAGE: @include justify-content(flex-start)
+ ************************/
+
+@mixin justify-content($value: flex-start) {
+	@if $value == flex-start {
+		-webkit-box-pack: start;
+		-ms-flex-pack: start;
+	}
+	@else if $value == flex-end {
+		-webkit-box-pack: end;
+		-ms-flex-pack: end;
+	}
+	@else if $value == space-between {
+		-webkit-box-pack: justify;
+		-ms-flex-pack: justify;
+	}
+	@else if $value == space-around {
+		-ms-flex-pack: distribute;
+	}
+	@else {
+		-webkit-box-pack: $value;
+		-ms-flex-pack: $value;
+	}
+
+	-webkit-justify-content: $value;
+	-moz-justify-content: $value;
+	justify-content: $value;
+}
+
+/*************************
+ * FLEXBOX ALIGN ITEMS
+ * Values: flex-start | flex-end | center | baseline | stretch
+ * Default: stretch
+ * USAGE: @include align-items(stretch)
+ ************************/
+
+@mixin align-items($value: stretch) {
+	@if $value == flex-start {
+		-webkit-box-align: start;
+		-ms-flex-align: start;
+	}
+	@else if $value == flex-end {
+		-webkit-box-align: end;
+		-ms-flex-align: end;
+	}
+	@else {
+		-webkit-box-align: $value;
+		-ms-flex-align: $value;
+	}
+
+	-webkit-align-items: $value;
+	-moz-align-items: $value;
+	align-items: $value;
+}
+
+/*************************
+ * FLEXBOX GROW
+ * Values: positive integer
+ * Default: 0
+ * USAGE: @include flex-grow(0)
+ ************************/
+
+@mixin flex-grow($int: 0) {
+	-webkit-box-flex: $int;
+	-webkit-flex-grow: $int;
+	-moz-flex-grow: $int;
+	-ms-flex-positive: $int;
+	flex-grow: $int;
+}
+
+
+
+/*************************
+ * TRANSITION
+ * I totally rewrote this to be cleaner and easier to use.
+ * You'll need to be using Sass 3.2+ for these to work.
+ * Thanks to @anthonyshort for the inspiration on these.
+ * USAGE: @include transition(all 0.2s ease-in-out);
+ ************************/
+
+@mixin transition($transition...) {
+	// defining prefixes so we can use them in mixins below
+	$prefixes: "-webkit", "-moz", "-ms", "-o", "";
+
+	@each $prefix in $prefixes {
+		#{$prefix}-transition: $transition;
+	}
+
+	transition: $transition;
+}
+
+// --------------------------------------------------------
+// arrows
+// --------------------------------------------------------
+// $direction: top, left, right, bottom, top-left, top-right, bottom-left, bottom-right
+// $color: hex, rgb or rbga
+// $size: px or em
+// @example
+// .element{
+//     @include arrow(top, #000, 50px);
+// }
+@mixin arrow($direction, $color, $size){
+    display: block;
+    height: 0;
+    width: 0;
+
+    @if $direction == 'top' {
+        border-left: $size solid transparent;
+    	border-right: $size solid transparent;
+    	border-bottom: $size solid $color;
+    } @else if $direction == 'right' {
+        border-top: $size solid transparent;
+        border-bottom: $size solid transparent;
+    	border-left: $size solid $color;
+    } @else if $direction == 'bottom' {
+        border-top: $size solid $color;
+        border-right: $size solid transparent;
+        border-left: $size solid transparent;
+    } @else if $direction == 'left' {
+        border-top: $size solid transparent;
+    	border-right: $size solid $color;
+    	border-bottom: $size solid transparent;
+    } @else if $direction == 'top-left' {
+        border-top: $size solid $color;
+        border-right: $size solid transparent;
+    } @else if $direction == 'top-right' {
+        border-top: $size solid $color;
+        border-left: $size solid transparent;
+    } @else if $direction == 'bottom-left' {
+        border-bottom: $size solid $color;
+        border-right: $size solid transparent;
+    } @else if $direction == 'bottom-right' {
+        border-bottom: $size solid $color;
+        border-left: $size solid transparent;
+    }
+}
+
+
+@mixin slick-arrow() {
+    .slick-arrow {
+        z-index: 10;
+        &:before {
+            font-size: 28px;
+            font-family: 'FontAwesome';
+            color: #ffffff;
+        }
+        &.slick-next {
+            right: 15px;
+            &:before {
+                content: '\f105';
+            }
+        }
+        &.slick-prev {
+            left: 15px;
+            &:before {
+                content: '\f104';
+            }
+        }
+    }
+}

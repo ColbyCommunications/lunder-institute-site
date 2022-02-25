@@ -1,0 +1,65 @@
+
+
+/* Header, Top Bar --- --- --- */
+#header_meta,
+#top .av_header_transparency #header_meta {
+    background-color: $top_bar_bg !important;
+    border-bottom: solid 1px #28799f;
+}
+.header_color .phone-info,
+.header_color .phone-info a,
+.header_color .social_bookmarks a,
+.header_color .sub_menu > ul > li > a {
+    color: $top_bar_font;
+    font-size: 12px;
+    font-weight: normal;
+}
+@media #{$tablet_media}, #{$phone_media} {
+    #top .av_header_glassy.av_header_transparency .social_bookmarks li a,
+    .header_color .social_bookmarks a {
+        color: $color__gray;
+    }
+}
+
+
+.phone-info span:before,
+#top .av_header_transparency .phone-info.with_nav span:before {
+    content: '\f041';
+    font-family: FontAwesome;
+    color: $top_bar_font;
+    display: inline-block;
+    padding-right: 5px;
+    font-size: 15px;
+    font-weight: normal;
+    position: relative;
+    top: 1px;
+}
+
+#top #wrap_all .sub_menu > ul > li > a,
+#top #wrap_all .av_header_transparency .sub_menu > ul > li > a {
+    font-weight: normal;
+    color: #ffffff;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.menu-icon:before {
+    font-family: FontAwesome;
+    color: #ffffff;
+    display: inline-block;
+    padding-right: 6px;
+    font-size: 14px;
+    font-weight: normal;
+    position: relative;
+    top: 0px;
+}
+.menu-icon-phone:before { content: '\f095'; }
+.menu-icon-mail:before { content: '\f0e0'; }
+.menu-icon-login:before { content: '\f023'; }
+
+#top .social_bookmarks li a { font-size: 21px; }
+
+@media only screen and (max-width: 990px) {
+    .av_secondary_right .sub_menu { display: none; }
+}
+/* END -  Header, Top Bar --- --- --- */

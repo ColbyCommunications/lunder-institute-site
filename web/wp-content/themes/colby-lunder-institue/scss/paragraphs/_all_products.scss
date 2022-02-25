@@ -1,0 +1,147 @@
+
+.p-all-products {
+    &__title {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        h2 {
+            font-size: 19px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            &:after {
+                content: '';
+                width: 100%;
+                height: 1px;
+                background: #e1e1e1;
+                position: absolute;
+                top: 50%;
+                margin-left: 1rem;
+            }
+        }
+    }
+    &__container {
+        @include flexbox;
+        @include flex-wrap(wrap);
+        &::after {
+            content: '';
+            flex: auto;
+        }
+        &__item {
+            @include flexbox;
+            @include flex-direction(column);
+            width: calc(33.33% - 14px);
+            background-color: #eee4d9;
+            border: solid 1px #e1e1e1;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            &:nth-child(3n+3) {
+                margin-right: 0;
+            }
+            @media #{$tablet_media} {
+                width: calc(50% - 10px);
+                &:nth-child(3n+3) {
+                    margin-right: inherit;
+                }
+                &:nth-child(2n+2) {
+                    margin-right: 0;
+                }
+            }
+            @media #{$phone_media} {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            &__image {
+                position: relative;
+                overflow: hidden;
+                img {
+                    @include border-radius(4px);
+                    @include transition(all 0.5s ease-in-out);
+                    display: block;
+                    &:hover {
+                      -moz-transform: scale(1.1);
+                      -webkit-transform: scale(1.1);
+                      transform: scale(1.1);
+                    }
+                }
+                &:after {
+                    position: absolute;
+                    bottom: 0;
+                    left: calc(50% - 4px);
+                    content: '';
+                    @include arrow('top', #eee4d9, 8px );
+                }
+            }
+
+            &__title {
+                padding: 25px 20px;
+                border-bottom: solid 1px #ffffff;
+                h3 {
+                    font-size: 22px;
+                    color: $color__primary;
+                    @media #{$tablet_media} {
+                        font-size: 20px;
+                    }
+                    @media #{$phone_media} {
+                        font-size: 20px;
+                    }
+                }
+                ul {
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    list-style: none;
+                    li {
+                        margin: 0;
+                        padding: 0 1.7em 0 0;
+                        flex-grow: 0;
+                        flex-basis: auto;
+                        position: relative;
+                        font-size: 17px;
+                        &:after {
+                            position: absolute;
+                            font-size: 1.3em;
+                            padding: 0 10px;
+                            content: '\2022'
+                        }
+                        &:last-child {
+                            padding: 0;
+                            &:after { display: none; }
+                        }
+                    }
+                }
+            }
+
+            &__swatches {
+                padding: 20px;
+                &__title {
+                    padding-bottom: 5px;
+                    font-size: 14px;
+                    color: #999999;
+                }
+                &__items {
+                    @include flexbox;
+                    @include flex-wrap(wrap);
+                    @include justify-content(space-between);
+                    &::after {
+                        content: '';
+                        flex: auto;
+                    }
+                    img {
+                        width: calc(20% - 2px);
+                        margin-right: 2px;
+                        margin-bottom: 2px;
+                        height: 100%;
+                        border: solid 1px #ffffff;
+                        &::nth-child(5n+5) {
+                            margin-right: 0;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
