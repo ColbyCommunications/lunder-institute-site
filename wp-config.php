@@ -112,6 +112,8 @@ if (false !== $strRelationships = getenv('PLATFORM_RELATIONSHIPS')) {
     // in a wp-config-local.php file to skip this setting on local development.
     if (!defined('WP_DEBUG')) {
         define('WP_DEBUG', false);
+        define('WP_DEBUG_DISPLAY', false);
+        
     }
 
     // Set all of the necessary keys to unique values, based on the Platform.sh
@@ -184,6 +186,15 @@ ini_set('session.gc_maxlifetime', 200000);
 ini_set('session.cookie_lifetime', 2000000);
 ini_set('pcre.backtrack_limit', 200000);
 ini_set('pcre.recursion_limit', 200000);
+
+if (WP_DEBUG)
+{
+    ini_set('display_errors', 'On');
+}
+else
+{
+    ini_set('display_errors', 'Off');
+}
 
 /**
  * Absolute path to the WordPress directory. 
