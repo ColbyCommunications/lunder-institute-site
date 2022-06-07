@@ -274,7 +274,7 @@ jobs:
             </body>
           </html>
           EOL
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GH Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
