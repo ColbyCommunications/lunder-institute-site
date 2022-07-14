@@ -166,7 +166,6 @@
 		display:inline-block;
 		max-width: 100%;
 		height:auto;
-		image-rendering: optimizeQuality;
 	}
 	
 	/* Hide Image Copyright everywhere by default  */
@@ -194,7 +193,7 @@
  -moz-osx-font-smoothing: grayscale;
   font-weight: normal;
   content: attr(data-av_icon);
-  speak: none;
+  speak: never;
 }
 
 
@@ -552,7 +551,7 @@ a{text-decoration:underline}
 .fixed_header #header,.html_header_top.html_header_sticky #header{position:relative;top:0}
 .fixed_header #main{padding-top:0}
 #header_main{border-bottom:0}
-nav,#footer,#scroll-top-link,.image-overlay,#top #main .sidebar,#commentform,.comment_container .miniheading,.comment_container .minitext,#top .avia-post-nav{display:none}
+nav,#footer,#scroll-top-link,#av-cookie-consent-badge,.image-overlay,#top #main .sidebar,#commentform,.comment_container .miniheading,.comment_container .minitext,#top .avia-post-nav{display:none}
 .avia-shadow{box-shadow:inset 0 0 0 rgba(0,0,0,0)}
 .grid-entry .inner-entry{margin-right:0;box-shadow:0 0 0 0 rgba(0,0,0,0);box-shadow:0 0 0 0 rgba(0,0,0,0)}
 .content{border:0}

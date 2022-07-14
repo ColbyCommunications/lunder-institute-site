@@ -32,13 +32,74 @@ body .av-align-center{text-align: center;}
 SCREEN READER see https://webaim.org/techniques/css/invisiblecontent/#techniques
 ====================================================================================================================================================== */
 .av-screen-reader-only {
-	position:absolute;
-	left:-10000px;
-	top:auto;
-	width:1px;
-	height:1px;
-	overflow:hidden;
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
 }
+
+/*	=====================================================================================
+Loading icon e.g. masonry, portfolio     (moved from portfolio.css)
+========================================================================================== */
+.avia_loading_icon{
+	background: rgba(0,0,0,0.7);
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	margin: 0;
+	display: none;
+	z-index: 10000;
+}
+
+.avia-msie-8 .avia_loading_icon{
+	background: #000;
+	filter: alpha(opacity=70) !important;
+}
+
+#top .avia_loading_icon .av-siteloader{
+	border-top-color: #fff;
+	border-right-color: #fff;
+	border-bottom-color: #fff;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -20px 0 0 -20px;
+}
+
+/*	=============================================================================================
+Tooltip for social share buttons     (moved from blog.css - breaks layout if blog disabled )
+================================================================================================= */
+.avia-related-tooltip{
+	position: absolute;
+	z-index: 9999999;
+	padding: 0;
+	width: 200px;
+	border-radius: 2px;
+	box-shadow: 0px 3px 13px 0px rgba(0, 0, 0, 0.1);
+	border-width: 1px;
+	border-style: solid;
+	padding: 15px;
+	margin-top: -10px;
+}
+
+
+.avia-related-tooltip .avia-arrow-wrap{
+	top: auto;
+	bottom: 0;
+	position: absolute;
+	left: 50%
+}
+
+.avia-related-tooltip .avia-arrow-wrap .avia-arrow{
+	border-top: none;
+	border-left: none;
+	top: -4px;
+}
+
 
 /* ======================================================================================================================================================
 TEXT BLOCK
@@ -48,7 +109,13 @@ clear: both;
 line-height: 1.65em;
 }
 
-.flex_column + .avia_textblock{padding-top:50px;}
+.avia_textblock.av_multi_colums > p:first-child{
+	margin-top: 0;
+}
+
+.flex_column + .avia_textblock{
+	padding-top: 50px;
+}
 
 /* ======================================================================================================================================================
 Columns
@@ -96,7 +163,7 @@ position: static; /*fixes a glitch with bg image not displaying below video slid
 }
 
 .avia-section.avia-section-small{
-min-height:0;	
+min-height:0;
 }
 
 .js_active .av-minimum-height .container{
@@ -108,7 +175,7 @@ transition: 		opacity 0.6s ease-in;
 
 .js_active.av-preloader-enabled .av-minimum-height .container{
 -webkit-transition: opacity 1.2s ease-in;
-transition: 		opacity 1.2s ease-in;	
+transition: 		opacity 1.2s ease-in;
 }
 
 
@@ -237,11 +304,21 @@ left:0;
 }
 
 /*prevent img pos flickering*/
-.js_active .av-parallax{opacity: 0;}
-.js_active .av-parallax.enabled-parallax{opacity: 1}
-.js_active .av-parallax.active-parallax{opacity: 1; 
--webkit-transition: opacity 0.3s ease-in-out;
-transition: 		opacity 0.3s ease-in-out;}
+.js_active .av-parallax,
+.js_active .av-parallax-object{
+	opacity: 0;
+}
+
+.js_active .av-parallax.enabled-parallax{
+	opacity: 1
+}
+
+.js_active .av-parallax.active-parallax,
+.js_active .av-parallax-object.active-parallax{
+	opacity: 1;
+	-webkit-transition: opacity 0.3s ease-in-out;
+	transition: 		opacity 0.3s ease-in-out;
+}
 
 
 /*special border top elements*/
@@ -368,7 +445,7 @@ background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAANCAYA
  border-radius: 2px;
 }
 
-#top select[multiple], #top .avia_ajax_form .select[multiple]{background-image:none;} 
+#top select[multiple], #top .avia_ajax_form .select[multiple]{background-image:none;}
 
 #top select[multiple] { background-image:none; }
 
@@ -436,21 +513,21 @@ div .mejs-controls{padding:0;}
 /* ======================================================================================================================================================
 Privacy toggles frontend
 ====================================================================================================================================================== */
- 
- #top .av-toggle-switch{display: block; margin-bottom: 10px; margin-top:10px;	
+
+#top .av-toggle-switch{display: block; margin-bottom: 10px; margin-top:10px;
 opacity: 0;
 text-align: left;
-} 
+}
 
-  
-#top .av-toggle-switch.active{	
+
+#top .av-toggle-switch.active{
 -webkit-animation: avia-fadein 1s 1 ease-in; /* Safari 4+ */
 animation:         avia-fadein 1s 1 ease-in; /* IE 10+ */
 opacity: 1;
 }
 
 #top .av-toggle-switch input[type="checkbox"] {display:none}
-#top .av-toggle-switch label {cursor:pointer; 
+#top .av-toggle-switch label {cursor:pointer;
 -webkit-touch-callout: none;
 -webkit-user-select: none;
 -khtml-user-select: none;
@@ -478,6 +555,10 @@ user-select: none;}
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 1px;
 }
 
+#top .av-toggle-switch.av-cookie-sc-disabled .toggle-track{
+	opacity: 0.2;
+}
+
 
 #top .av-toggle-switch input[type="checkbox"]:checked +  .toggle-track:before{
   right:27px;
@@ -487,7 +568,7 @@ user-select: none;}
   background:#5dceba;
 }
 
-  
+
 
 
 #top .av-toggle-switch .toggle-label-content{
@@ -498,6 +579,9 @@ user-select: none;}
 	font-size: inherit;
 }
 
+#top .avia-cookie-consent-modal-buttons-wrap{
+	text-align: center;
+}
 
 
 
@@ -527,7 +611,7 @@ line-height: 1.65em;
 #top .avia-tooltip.transparent_dark, #top .avia-tooltip.transparent_dark .avia-arrow{
 background: #000;
 background: rgba(0, 0, 0, 0.8);
-color:#fff;	
+color:#fff;
 border:none;
 }
 
@@ -590,62 +674,124 @@ overflow: hidden;
 ANIMATIONS
 ====================================================================================================================================================== */
 .avia_transform.avia_desktop .av-animated-generic{
-opacity: 0;
+	opacity: 0;
 }
 
+.avia_transform .av-animated-when-visible,
+.avia_transform .av-animated-when-almost-visible,
+.avia_transform .av-animated-when-visible-95{
+	opacity: 0;
+}
 
+.avia_transform .shadow-animated.av-animated-when-visible,
+.avia_transform .shadow-animated.av-animated-when-almost-visible,
+.avia_transform .shadow-animated.av-animated-when-visible-95{
+	opacity: 1;
+}
+
+.avia-animate-admin-preview.fade-in,
 .avia_transform .avia_start_delayed_animation.fade-in {
--webkit-animation: avia-fadein 1.5s 1 ease-out; /* Safari 4+ */
-animation:         avia-fadein 1.5s 1 ease-out; /* IE 10+ */
-opacity: 1;
+	-webkit-animation: avia-fadein 1.5s 1 ease-out; /* Safari 4+ */
+	animation:         avia-fadein 1.5s 1 ease-out; /* IE 10+ */
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.pop-up,
 .avia_transform .avia_start_delayed_animation.pop-up {
--webkit-animation: avia_image_appear 0.5s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
-animation:         avia_image_appear 0.5s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
-opacity: 1;
+	-webkit-animation: avia_image_appear 0.5s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
+	animation:         avia_image_appear 0.5s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.top-to-bottom,
 .avia_transform .avia_start_delayed_animation.top-to-bottom {
--webkit-animation: avia-ttb 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
-animation:         avia-ttb 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
-opacity: 1;
+	-webkit-animation: avia-ttb 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
+	animation:         avia-ttb 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.bottom-to-top,
 .avia_transform .avia_start_delayed_animation.bottom-to-top {
--webkit-animation: avia-btt 0.8s 1 cubic-bezier(0.165, 0.840, 0.440, 1.000); /* Safari 4+ */
-animation:         avia-btt 0.8s 1 cubic-bezier(0.165, 0.840, 0.440, 1.000); /* IE 10+ */
-opacity: 1;
+	-webkit-animation: avia-btt 0.8s 1 cubic-bezier(0.165, 0.840, 0.440, 1.000); /* Safari 4+ */
+	animation:         avia-btt 0.8s 1 cubic-bezier(0.165, 0.840, 0.440, 1.000); /* IE 10+ */
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.left-to-right,
 .avia_transform .avia_start_delayed_animation.left-to-right {
--webkit-animation: avia-ltr 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
-animation:         avia-ltr 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
-opacity: 1;
+	-webkit-animation: avia-ltr 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
+	animation:         avia-ltr 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.right-to-left,
 .avia_transform .avia_start_delayed_animation.right-to-left {
--webkit-animation: avia-rtl 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
-animation:         avia-rtl 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
-opacity: 1;
+	-webkit-animation: avia-rtl 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* Safari 4+ */
+	animation:         avia-rtl 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275); /* IE 10+ */
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.av-rotateIn,
 .avia_transform .avia_start_delayed_animation.av-rotateIn {
-  -webkit-animation: avia-rotateIn 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  animation: avia-rotateIn 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  opacity: 1;
+	-webkit-animation: avia-rotateIn 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	animation: avia-rotateIn 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.av-rotateInUpLeft,
 .avia_transform .avia_start_delayed_animation.av-rotateInUpLeft {
-  -webkit-animation: avia-rotateInUpLeft 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  animation: avia-rotateInUpLeft 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  opacity: 1;
+	-webkit-animation: avia-rotateInUpLeft 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	animation: avia-rotateInUpLeft 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	opacity: 1;
 }
 
+.avia-animate-admin-preview.av-rotateInUpRight,
 .avia_transform .avia_start_delayed_animation.av-rotateInUpRight {
-  -webkit-animation: avia-rotateInUpRight 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  animation: avia-rotateInUpRight 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  opacity: 1;
+	-webkit-animation: avia-rotateInUpRight 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	animation: avia-rotateInUpRight 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	opacity: 1;
+}
+
+.avia-animate-admin-preview.avia-curtain-reveal-overlay,
+.avia_transform.avia_desktop .avia-curtain-reveal-overlay,
+.avia_transform .avia-curtain-reveal-overlay{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 1;
+	z-index: 100;
+}
+
+.avia-animate-admin-preview.curtain-reveal-ttb,
+.avia_transform .avia_start_delayed_animation.curtain-reveal-ttb{
+	-webkit-animation: avia-curtain-reveal-ttb cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* Safari 4+ */
+	animation:         avia-curtain-reveal-ttb cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* IE 10+ */
+	height: 0;
+	top: 100%;
+}
+
+.avia-animate-admin-preview.curtain-reveal-btt,
+.avia_transform .avia_start_delayed_animation.curtain-reveal-btt{
+	-webkit-animation: avia-curtain-reveal-btt cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* Safari 4+ */
+	animation:         avia-curtain-reveal-btt cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* IE 10+ */
+	height: 0;
+}
+
+.avia-animate-admin-preview.curtain-reveal-ltr,
+.avia_transform .avia_start_delayed_animation.curtain-reveal-ltr{
+	-webkit-animation: avia-curtain-reveal-ltr cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* Safari 4+ */
+	animation:         avia-curtain-reveal-ltr cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* IE 10+ */
+	width: 0;
+	left: 100%;
+}
+
+.avia-animate-admin-preview.curtain-reveal-rtl,
+.avia_transform .avia_start_delayed_animation.curtain-reveal-rtl{
+	-webkit-animation: avia-curtain-reveal-rtl cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* Safari 4+ */
+	animation:         avia-curtain-reveal-rtl cubic-bezier(0.17,0.84,0.44,1) 1s 1; /* IE 10+ */
+	width: 0;
 }
 
 
@@ -669,6 +815,7 @@ opacity: 1;
   100% { transform:scale(1); opacity: 1;  }
 }
 
+
 @-webkit-keyframes avia_hotspot_appear {
   0%   { -webkit-transform:translate(0, 80px); opacity: 0.1;  }
   100% { -webkit-transform:translate(0, 0px); opacity: 1; }
@@ -677,7 +824,6 @@ opacity: 1;
   0%   { transform:translate(0, 80px); opacity: 0.1;  }
   100% { transform:translate(0, 0px); opacity: 1;  }
 }
-
 
 
 @-webkit-keyframes avia_appear_short {
@@ -692,16 +838,16 @@ opacity: 1;
 }
 
 
-
 /*pop up animation*/
-@-webkit-keyframes avia_msonry_show {
+@-webkit-keyframes avia_masonry_show {
   0%   { -webkit-transform:translateZ(300px) translateY(200px) rotateX(-70deg); opacity: 0.1;  }
   100% { -webkit-transform:translateZ(0px) translateY(0px) rotateX(0deg); opacity: 1; }
 }
-@keyframes avia_msonry_show {
+@keyframes avia_masonry_show {
   0%   { transform:translateZ(300px) translateY(200px) rotateX(-70deg); opacity: 0.1;  }
   100% { transform:translateZ(0px) translateY(0px) rotateX(0deg); opacity: 1;  }
 }
+
 
 /*animated arrow animattion*/
 @-webkit-keyframes avia_fade_move_down {
@@ -726,6 +872,7 @@ opacity: 1;
   100% { height:100%; }
 }
 
+
 /*expand width animation*/
 @-webkit-keyframes avia_expand {
   0%   { width:0%; }
@@ -736,8 +883,8 @@ opacity: 1;
   100% { width:100%; }
 }
 
-/*fade in animation*/
 
+/*fade in animation*/
 @-webkit-keyframes avia-ltr {
   0%   { -webkit-transform:translate(-10%,0); opacity: 0;  }
   100% { -webkit-transform:translate(0,0); opacity: 1; }
@@ -746,6 +893,7 @@ opacity: 1;
   0%   { transform:translate(-10%,0); opacity: 0;  }
   100% { transform:translate(0,0); opacity: 1; }
 }
+
 
 @-webkit-keyframes avia-rtl {
   0%   { -webkit-transform:translate(10%,0); opacity: 0;  }
@@ -756,6 +904,7 @@ opacity: 1;
   100% { transform:translate(0,0); opacity: 1; }
 }
 
+
 @-webkit-keyframes avia-btt {
   0%   { -webkit-transform:translate(0,50%); opacity: 0;  }
   100% { -webkit-transform:translate(0,0); opacity: 1; }
@@ -764,6 +913,7 @@ opacity: 1;
   0%   { transform:translate(0,50%); opacity: 0;  }
   100% { transform:translate(0,0); opacity: 1; }
 }
+
 
 @-webkit-keyframes avia-ttb {
   0%   { -webkit-transform:translate(0, -10%); opacity: 0;  }
@@ -774,6 +924,7 @@ opacity: 1;
   100% { transform:translate(0,0); opacity: 1; }
 }
 
+
 @-webkit-keyframes avia-fadein {
   0%   { opacity: 0; }
   100% { opacity: 1; }
@@ -783,8 +934,18 @@ opacity: 1;
   100% { opacity: 1; }
 }
 
-/*rotate*/
 
+@-webkit-keyframes avia-fadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes avia-fadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+/*rotate*/
 @-webkit-keyframes avia-rotateIn {
   0% {
     -webkit-transform-origin: center;
@@ -820,6 +981,7 @@ opacity: 1;
     opacity: 1;
   }
 }
+
 
 @-webkit-keyframes avia-rotateInUpLeft {
   0% {
@@ -895,7 +1057,6 @@ opacity: 1;
 }
 
 
-
 /*background animation*/
 @-webkit-keyframes avia-bg-move {
   0%   { background-position: -31px 0;  }
@@ -907,10 +1068,7 @@ opacity: 1;
 }
 
 
-
-
 /*caption animation*/
-
 @-webkit-keyframes caption-right {
   0%   { -webkit-transform:translate(2000px,0); opacity: 0;  }
   100% { -webkit-transform:translate(0,0); opacity: 1; }
@@ -919,6 +1077,7 @@ opacity: 1;
   0%   { transform:translate(2000px,0); opacity: 0;  }
   100% { transform:translate(0,0); opacity: 1; }
 }
+
 
 @-webkit-keyframes caption-left {
   0%   { -webkit-transform:translate(-2000px,0); opacity: 0;  }
@@ -929,6 +1088,7 @@ opacity: 1;
   100% { transform:translate(0,0); opacity: 1; }
 }
 
+
 @-webkit-keyframes caption-top {
   0%   { -webkit-transform:translate(0,-20px); opacity: 0;  }
   100% { -webkit-transform:translate(0,0); opacity: 1; }
@@ -938,6 +1098,7 @@ opacity: 1;
   100% { transform:translate(0,0); opacity: 1; }
 }
 
+
 @-webkit-keyframes caption-bottom {
   0%   { -webkit-transform:translate(0,20px); opacity: 0;  }
   100% { -webkit-transform:translate(0,0); opacity: 1; }
@@ -946,6 +1107,7 @@ opacity: 1;
   0%   { transform:translate(0,20px); opacity: 0;  }
   100% { transform:translate(0,0); opacity: 1; }
 }
+
 
 /*image hotspot pulse*/
 @-webkit-keyframes av_pulsate {
@@ -972,3 +1134,407 @@ opacity: 1;
 	40% {opacity: 0.5;box-shadow: 0 0 0 2px rgba(255,255,255,0.1), 0 0 10px 10px #fff, 0 0 0 10px rgba(255,255,255,0.5);}
 	100% {box-shadow: 0 0 0 2px rgba(255,255,255,0.1), 0 0 10px 10px #fff, 0 0 0 10px rgba(255,255,255,0.5);transform: scale(1.5);opacity: 0;}
 }
+
+
+/* curtain reveals  1px miscalc on several screen sizes !!! */
+@-webkit-keyframes avia-curtain-reveal-ltr{
+	0%	{ width: 101%; left: 0; }
+	100%{ width: 0; left: 100%; }
+}
+
+@keyframes avia-curtain-reveal-ltr{
+	0%	{ width: 101%; left: 0; }
+	100%{ width: 0; left: 100%; }
+}
+
+
+@-webkit-keyframes avia-curtain-reveal-rtl{
+	0%	{ width: 100%; }
+	100%{ width: 0; }
+}
+
+@keyframes avia-curtain-reveal-rtl{
+	0%	{ width: 100%; }
+	100%{ width: 0; }
+}
+
+
+@-webkit-keyframes avia-curtain-reveal-ttb{
+	0%	{ height: 101%; top: 0; }
+	100%{ height: 0; top: 100%; }
+}
+
+@keyframes avia-curtain-reveal-ttb{
+	0%	{ height: 101%; top: 0; }
+	100%{ height: 0; top: 100%; }
+}
+
+
+@-webkit-keyframes avia-curtain-reveal-btt{
+	0%	{ height: 100%; }
+	100%{ height: 0; }
+}
+
+@keyframes avia-curtain-reveal-btt{
+	0%	{ height: 100%; }
+	100%{ height: 0; }
+}
+
+/*	==================================================================
+	Advanced Animations		based on https://github.com/animate-css
+	==================================================================
+*/
+
+.avia-animate-admin-preview.fade-in-left,
+.avia_transform .avia_start_delayed_animation.fade-in-left{
+	-webkit-animation: avia-fade-in-left cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-fade-in-left cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.fade-in-right,
+.avia_transform .avia_start_delayed_animation.fade-in-right{
+	-webkit-animation: avia-fade-in-right cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-fade-in-right cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.fade-in-down,
+.avia_transform .avia_start_delayed_animation.fade-in-down{
+	-webkit-animation: avia-fade-in-down cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-fade-in-down cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.fade-in-up,
+.avia_transform .avia_start_delayed_animation.fade-in-up{
+	-webkit-animation: avia-fade-in-up cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-fade-in-up cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.flip-in-x,
+.avia_transform .avia_start_delayed_animation.flip-in-x{
+	-webkit-animation: avia-flip-in-x cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-flip-in-x cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.flip-in-y,
+.avia_transform .avia_start_delayed_animation.flip-in-y{
+	-webkit-animation: avia-flip-in-y cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-flip-in-y cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.roll-in,
+.avia_transform .avia_start_delayed_animation.roll-in{
+	-webkit-animation: avia-roll-in cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-roll-in cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+.avia-animate-admin-preview.zoom-in,
+.avia_transform .avia_start_delayed_animation.zoom-in{
+	-webkit-animation: avia-zoom-in cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* Safari 4+ */
+	animation:         avia-zoom-in cubic-bezier(0.17,0.84,0.44,1) 1s 1 forwards; /* IE 10+ */
+}
+
+@-webkit-keyframes avia-fade-in-left{
+	0% {
+		opacity: 0;
+		-webkit-transform: translate3d(-100%, 0, 0);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes avia-fade-in-left{
+	0% {
+		opacity: 0;
+		transform: translate3d(-100%, 0, 0);
+	}
+  100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+
+@-webkit-keyframes avia-fade-in-right{
+	0% {
+		opacity: 0;
+		-webkit-transform: translate3d(100%, 0, 0);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes avia-fade-in-right{
+	0% {
+		opacity: 0;
+		transform: translate3d(100%, 0, 0);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+
+@-webkit-keyframes avia-fade-in-down {
+	0% {
+		opacity: 0;
+		-webkit-transform: translate3d(0, -100%, 0);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes avia-fade-in-down {
+	0% {
+		opacity: 0;
+		transform: translate3d(0, -100%, 0);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+
+@-webkit-keyframes avia-fade-in-up {
+	0% {
+		opacity: 0;
+		-webkit-transform: translate3d(0, 100%, 0);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes avia-fade-in-up {
+	0% {
+		opacity: 0;
+		transform: translate3d(0, 100%, 0);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+
+@-webkit-keyframes avia-flip-in-x{
+	0% {
+		-webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+		-webkit-animation-timing-function: ease-in;
+		opacity: 0;
+	}
+/*	40% {
+		-webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+		-webkit-animation-timing-function: ease-in;
+	}
+	60% {
+		-webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+		opacity: 1;
+	}*/
+	80% {
+		-webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+	}
+	100% {
+		-webkit-transform: perspective(400px);
+		opacity: 1;
+	}
+}
+
+@keyframes avia-flip-in-x{
+	0% {
+		transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+		animation-timing-function: ease-in;
+		opacity: 0;
+	}
+/*	40% {
+		transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+		animation-timing-function: ease-in;
+	}
+	60% {
+		transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+		opacity: 1;
+	}*/
+	80% {
+		transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+	}
+	100% {
+		transform: perspective(400px);
+		opacity: 1;
+	}
+}
+
+
+@-webkit-keyframes avia-flip-in-y{
+	0% {
+		-webkit-transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+		-webkit-animation-timing-function: ease-in;
+		opacity: 0;
+	}
+/*	40% {
+		-webkit-transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+		-webkit-animation-timing-function: ease-in;
+	}
+	60% {
+		-webkit-transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+		opacity: 1;
+	}*/
+	80% {
+		-webkit-transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+	}
+	100% {
+		-webkit-transform: perspective(400px);
+		opacity: 1;
+	}
+}
+
+@keyframes avia-flip-in-y{
+	0% {
+		transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+		animation-timing-function: ease-in;
+		opacity: 0;
+	}
+/*	40% {
+		transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+		animation-timing-function: ease-in;
+	}
+	60% {
+		transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+		opacity: 1;
+	}*/
+	80% {
+		transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+	}
+	100% {
+		transform: perspective(400px);
+		opacity: 1;
+	}
+}
+
+
+@-webkit-keyframes avia-roll-in{
+	0% {
+		opacity: 0;
+		-webkit-transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes avia-roll-in{
+	0% {
+		opacity: 0;
+		transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+
+@-webkit-keyframes avia-zoom-in{
+	0% {
+		opacity: 0;
+		-webkit-transform: scale3d(0.3, 0.3, 0.3);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes avia-zoom-in{
+	0% {
+		opacity: 0;
+		transform: scale3d(0.3, 0.3, 0.3);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+
+
+/*	=============================
+	Shape SVG Dividers
+	=============================
+*/
+.avia-divider-svg{
+	overflow: hidden;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	line-height: 0;
+	direction: ltr;
+	pointer-events: none;
+}
+
+.avia-divider-svg-top{
+    top: 0px;
+}
+
+/* fix a small gap on different screen sizes - rotate(180deg) seems not calculate correctly  */
+.avia-divider-svg-bottom{
+	bottom: -2px;
+}
+
+/*	Temporary fixes for Chrome 85 issue. Can be removed in a future version of Chrome.	*/
+.avia-divider-svg-top:not(.avia-svg-original) svg,
+.avia-divider-svg-bottom:not(.avia-svg-negative) svg{
+	z-index: -1;
+}
+
+.avia-divider-svg.avia-divider-svg-bottom.avia-svg-original,
+.avia-divider-svg.avia-divider-svg-top.avia-svg-negative{
+	-webkit-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
+.avia-divider-svg svg{
+	fill: #fff;
+	display: block;
+	width: calc(100% + 1.3px);
+	position: relative;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+	transform: translateX(-50%);
+}
+
+.avia-divider-svg path{
+	-webkit-transform-origin: center;
+	-ms-transform-origin: center;
+	transform-origin: center;
+	-webkit-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+}
+
+.avia-divider-svg.avia-flipped-svg svg{
+	-webkit-transform: translateX(-50%) rotateY(180deg);
+	-ms-transform: translateX(-50%) rotateY(180deg);
+	transform: translateX(-50%) rotateY(180deg);
+}
+
+.avia-divider-svg.avia-to-front{
+	z-index: 100;
+}
+
+
+/*	special case for paralax with overlay hiding svg */
+.av-parallax-section.av-section-color-overlay-active .avia-divider-svg{
+	z-index: 1;
+}
+.av-parallax-section.av-section-color-overlay-active .avia-divider-svg.avia-to-front{
+	z-index: 100;
+}
+

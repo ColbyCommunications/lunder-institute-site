@@ -62,8 +62,8 @@ transform: scale(0.9);
 -webkit-transform-style: preserve-3d;
 }
 
-
-.av_font_icon.av-icon-style-border a.av-icon-char:hover:after {
+/*	backwards comp. default behaviour prior 4.8.4 with white shadow only	*/
+.av_font_icon.av-icon-style-border:not(.avia-sonar-shadow) a.av-icon-char:hover:after {
 -webkit-animation: 	sonarEffect 1s ease-out ;
 animation: 			sonarEffect 1s ease-out ;
 }

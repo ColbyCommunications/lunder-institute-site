@@ -1,6 +1,6 @@
 <?php
-if ( !defined('ABSPATH') ){ die(); }
-	
+if ( ! defined( 'ABSPATH' ) ){ die(); }
+
 global $avia_config;
 
 ##############################################################################
@@ -49,16 +49,16 @@ echo "<aside class='sidebar sidebar_".$sidebar." ".$sidebar_text_alignment." ".$
         {
             $custom_sidebar = get_post_meta($the_id, 'sidebar', true);
         }
-		
+
 		$custom_sidebar = apply_filters('avf_custom_sidebar', $custom_sidebar);
-		
+
         if($custom_sidebar)
         {
             dynamic_sidebar($custom_sidebar);
             $default_sidebar = false;
         }
         else
-        {	
+        {
             if(empty($avia_config['currently_viewing'])) $avia_config['currently_viewing'] = 'page';
 
             // general shop sidebars
@@ -96,7 +96,7 @@ echo "<aside class='sidebar sidebar_".$sidebar." ".$sidebar_text_alignment." ".$
 			 if(apply_filters('avf_show_default_sidebar_pages', true)) {avia_dummy_widget(2);}
              if(apply_filters('avf_show_default_sidebar_categories', true)) {avia_dummy_widget(3);}
              if(apply_filters('avf_show_default_sidebar_archiv', true)) {avia_dummy_widget(4);}
-             
+
              //	customize default sidebar and add your sidebars
 	     do_action ('ava_add_custom_default_sidebars');
         }

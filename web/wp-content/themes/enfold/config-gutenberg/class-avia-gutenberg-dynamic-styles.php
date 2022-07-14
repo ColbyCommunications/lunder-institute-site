@@ -2,78 +2,78 @@
 /**
  * Class that integrates dynamic theme settings in gutenberg editor.
  * Creates a css file.
- * 
+ *
  * @since 4.5.5
  * @added_by Günter
  */
-if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
+if( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
 
 
 if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 {
-	class Avia_Gutenberg_Dynamic_Styles 
+	class Avia_Gutenberg_Dynamic_Styles
 	{
 
 		/**
 		 * Holds the instance of this class
-		 * 
+		 *
 		 * @since 4.5.5
-		 * @var Avia_Gutenberg_Dynamic_Styles 
+		 * @var Avia_Gutenberg_Dynamic_Styles
 		 */
 		static private $_instance = null;
-		
+
 		/**
 		 * New Line value for dynamic CSS output
-		 * 
+		 *
 		 * @since 4.5.5
-		 * @var string 
+		 * @var string
 		 */
 		protected $nl;
 
 
 		/**
 		 * Holds a copy of the global option array
-		 * 
+		 *
 		 * @since 4.5.5
-		 * @var array 
+		 * @var array
 		 */
 		protected $options;
-		
+
 		/**
 		 *
 		 * @since 4.5.5
-		 * @var string 
+		 * @var string
 		 */
 		protected $dynamic_css;
-		
+
 		/**
 		 * CSS rules built from "General Styling" theme options (css\dynamic-css.php)
-		 * 
+		 *
 		 * @since 4.5.5
-		 * @var array 
+		 * @var array
 		 */
 		protected $rules;
 
 		/**
 		 * Holds a copy of extracted option array from includes\admin\register-dynamic-styles.php
-		 * 
+		 *
 		 * @since 4.5.5
-		 * @var array 
+		 * @var array
 		 */
 		protected $color_set;
-		
+
 		/**
 		 * Holds a copy of extracted option array from includes\admin\register-dynamic-styles.php
-		 * 
+		 *
 		 * @since 4.5.5
-		 * @var array 
+		 * @var array
 		 */
 		protected $styles;
 
 
 		/**
 		 * Return the instance of this class
-		 * 
+		 *
 		 * @since 4.5.5
 		 * @return Avia_Gutenberg_Dynamic_Styles
 		 */
@@ -83,15 +83,15 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			{
 				Avia_Gutenberg_Dynamic_Styles::$_instance = new Avia_Gutenberg_Dynamic_Styles();
 			}
-			
+
 			return Avia_Gutenberg_Dynamic_Styles::$_instance;
 		}
-		
-		
+
+
 		/**
 		 * @since 4.5.5
 		 */
-		protected function __construct() 
+		protected function __construct()
 		{
 			$this->nl = "\r\n";
 			$this->options = array();
@@ -100,21 +100,21 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			$this->color_set = array();
 			$this->styles = array();
 		}
-		
+
 		/**
 		 * @since 4.5.5
 		 */
-		public function __destruct() 
+		public function __destruct()
 		{
 			unset( $this->options );
 			unset( $this->rules );
 			unset( $this->color_set );
 			unset( $this->styles );
 		}
-		
+
 		/**
 		 * Returns the generated CSS
-		 * 
+		 *
 		 * @since 4.5.5
 		 * @return string
 		 */
@@ -122,10 +122,10 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 		{
 			return apply_filters( 'avf_gutenberg_dynamic_css_content', $this->dynamic_css );
 		}
-		
+
 		/**
 		 * Returns the generated CSS wrapped in <script> tags for inline integration
-		 * 
+		 *
 		 * @since 4.5.5
 		 * @return string
 		 */
@@ -137,25 +137,26 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 
 		/**
 		 * This function is called after includes\admin\register-dynamic-styles.php is executed
-		 * 
+		 *
 		 * @since 4.5.5
 		 * @param array $options
 		 */
 		public function create_styles( array $options = array() )
 		{
 			global $avia_config;
-			
+
 
 			$this->options = empty( $options ) ? avia_get_option() : $options;
-			
+
 			$this->color_set = $avia_config['backend_colors']['color_set'];
 			$this->styles = $avia_config['backend_colors']['style'];
+			$this->typos = $avia_config['backend_colors']['typos'];
 			$this->rules = array();
-			
+
 			/**
 			 * Content font color, background color and font size
 			 */
-			$sel = array( 
+			$sel = array(
 						'.editor-block-list__block',
 						'.editor-block-list__block p'
 					);
@@ -168,11 +169,11 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			{
 				$styles[] = "color:{$this->color_set['main_color']['color']}";
 			}
-			if( ! empty( $this->styles['default_font_size'] ) )
+			if( ! empty( $this->typos['default_font_size'] ) )
 			{
-				$styles[] = "font-size:{$this->styles['default_font_size']}";
+				$styles[] = "font-size:{$this->typos['default_font_size']}";
 			}
-				
+
 			if( ! empty( $styles ) )
 			{
 				$this->rules[] = array(
@@ -180,13 +181,13 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 									'selectors'	=> $sel,
 									'styles'	=> $styles
 									);
-				
+
 			}
-			
+
 			/**
 			 * Heading color
 			 */
-			$sel = array( 
+			$sel = array(
 						'.editor-block-list__block h1',
 						'.editor-block-list__block h2',
 						'.editor-block-list__block h3',
@@ -207,13 +208,12 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 										'styles'	=> $styles
 									);
 			}
-			
+
 			/**
-			 * Title color
-			 *@comment by Kriesi:  issues with white colors on white bg. disabled for now. needs further testing
+			 * Title colors
 			 */
-/*
-			$sel = array( 
+
+			$sel = array(
 						'.editor-post-title__block textarea',
 					);
 			$styles = array();
@@ -221,6 +221,12 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			{
 				$styles[] = "color:{$this->color_set['alternate_color']['color']}";
 			}
+
+			if( ! empty( $this->color_set['alternate_color']['bg'] ) )
+			{
+				$styles[] = "background-color:{$this->color_set['alternate_color']['bg']}";
+			}
+
 			if( ! empty( $styles ) )
 			{
 				$this->rules[] = array(
@@ -229,12 +235,12 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 										'styles'	=> $styles
 									);
 			}
-*/
+
 
 			/**
 			 * Primary color for special elements
 			 */
-			$sel = array( 
+			$sel = array(
 						'.editor-block-list__block a',
 						'.editor-block-list__block strong',
 						'.editor-block-list__block b',
@@ -254,40 +260,40 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 										'styles'	=> $styles
 									);
 			}
-			
-			
-			
+
+
+
 			$this->rules = array_merge( $this->rules, $avia_config['style'] );
-			
+
 			/**
-			 * @used_by		currently unused
+			 * @used_by				Avia_WC_Block_Editor				10
 			 * @since 4.5.5
 			 * @return array
 			 */
 			$this->rules = apply_filters( 'avf_gutenberg_create_styles_rules', $this->rules, $this );
-			
+
 			$this->create_dynamic_css_content();
 		}
-		
+
 		/**
 		 * Creates the CSS out of the options and settings
-		 * 
+		 *
 		 * @since 4.5.5
 		 */
-		protected function create_dynamic_css_content() 
+		protected function create_dynamic_css_content()
 		{
 
 			$this->dynamic_css = '';
-						
+
 			/**
 			 * Get all custom uploaded fonts
-			 * 
+			 *
 			 * @used_by				AviaTypeFonts			10
 			 * @since 5.5
 			 */
 			$sg = AviaGutenbergThemeIntegration()->get_style_generator();
 			$custom_fonts = apply_filters( 'avf_create_dynamic_stylesheet', '', $sg, 'before' );
-			
+
 			/**
 			 * fonts are already in <head> - supress when stylesheet is printed to <head>
 			 */
@@ -295,22 +301,22 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			{
 				$this->dynamic_css .= $custom_fonts . $this->nl;
 			}
-			
+
 			/**
 			 * Add all main option rules
 			 */
-			foreach( $this->rules as $index => $rule ) 
+			foreach( $this->rules as $index => $rule )
 			{
 				if( ! isset( $rule['key'] ) )
 				{
 					continue;
 				}
-				
+
 				if( 'direct_input' == $rule['key'] )
 				{
 					continue;
 				}
-				
+
 				if( 'block_direct_input' == $rule['key'] && ! empty( $rule['selectors'] ) )
 				{
 					$s = ! empty( $rule['styles'] ) ? $rule['styles'] : array();
@@ -321,19 +327,19 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 					$this->{$rule['key']}( $rule, $index );
 				}
 			}
-			
+
 			/**
 			 * Add wizzard stylings in a future release here
 			 */
-			
-			
+
+
 			/**
 			 * @used_by			currently unused
 			 * @since 4.5.5
 			 * @return string
 			 */
 			$this->dynamic_css = apply_filters( 'avf_gutenberg_create_dynamic_css', $this->dynamic_css, $this );
-			
+
 			/**
 			 * Set a dummy content to avoid problems with output of empty CSS file
 			 */
@@ -341,12 +347,12 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			{
 				$this->dynamic_css = '.root{}' . $this->nl;
 			}
-			
+
 		}
-		
+
 		/**
 		 * Adds a "google_webfont" to styling
-		 * 
+		 *
 		 * @since 4.5.5
 		 * @param array $rule
 		 * @param int $index
@@ -357,67 +363,85 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 			{
 				return;
 			}
-			
-			$selectors = array( 
-							'default_font'		=> array( 
+
+			/**
+			 * Set up array of selectors (key = theme option):
+			 *
+			 *		google_webfont = Selectors for "Heading Font" option
+			 *		default_font = Selectors for "Font for your body text" option
+			 */
+			$selectors = array(
+							'default_font'		=> array(
 														'.editor-block-list__block'
 													),
-							'google_webfont'	=> array( 
+							'google_webfont'	=> array(
 														'.editor-block-list__block .wp-block-heading',
 														'.editor-post-title__block textarea',
 													)
 						);
-			
-			
+
+			/**
+			 * @used_by			Avia_WC_Block_Editor				10
+			 *
+			 * @since 4.6.4
+			 * @param array $selectors
+			 * @param array $rule
+			 * @param array $this->rules
+			 * @param int $index
+			 * @retur array
+			 */
+			$selectors = apply_filters( 'avf_gutenberg_fonts_selectors', $selectors, $rule, $this->rules, $index );
+
+
 			$sel = $selectors[ $rule['font_source'] ];
 			$styles = array();
-			
+
 			if( 'google_webfont' == $rule['font_source'] )
 			{
 				$bodycls = ! empty( $rule['font_info']['font_css'] ) ? '.' . $rule['font_info']['font_css'] : '';
-				foreach ( $sel as $key => $s) 
+				foreach ( $sel as $key => $s )
 				{
 					$sel[ $key ] = str_replace( '{{AVIA_BODY_CLASS}}', $bodycls, $s );
 				}
 			}
-			
+
 			unset( $rule['font_info']['font_css'] );
-			
-			foreach( $rule['font_info'] as $info ) 
+
+			foreach( $rule['font_info'] as $info )
 			{
 				if( ! empty( $info ) )
 				{
 					$styles[] = rtrim( rtrim( $info ), ';' );
 				}
 			}
-			
+
 			$this->add_style_arrays( $sel, $styles );
 		}
-		
+
 		/**
 		 * Combines each entry of selector array with all $styles entries and adds output to dynamic css content
 		 * if $styles is empty  $selectors must contain a valid CSS rule.
-		 * 
+		 *
 		 * @since 4.5.5
 		 * @param array $selectors
 		 * @param array $styles
 		 */
 		protected function add_style_arrays( array $selectors, array $styles = array() )
 		{
+			$sel = implode( ",{$this->nl}", $selectors );
+
 			if( empty( $styles ) )
 			{
-				$this->dynamic_css .= $selectors . $this->nl;
+				$this->dynamic_css .= $sel . $this->nl;
 			}
 			else
 			{
-				$sel = implode( ",{$this->nl}", $selectors );
-				
 				/**
 				 * Gutenberg might override settings
 				 */
 				if( ! AviaGutenbergThemeIntegration()->use_dynamic_stylesheet() )
 				{
-					foreach( $styles as $key => $style ) 
+					foreach( $styles as $key => $style )
 					{
 						if( false === strpos( $style, '!important' ) )
 						{
@@ -426,17 +450,17 @@ if( ! class_exists( 'Gutenberg_Dynamic_Styles' ) )
 						}
 					}
 				}
-				
+
 				$style = implode( '; ', $styles ) . ';';
 				$this->dynamic_css .= "{$sel} {{$style}}" . $this->nl;
 			}
 		}
-	
+
 	}
-	
+
 	/**
 	 * Returns the main instance of Gutenberg_Dynamic_Styles to prevent the need to use globals
-	 * 
+	 *
 	 * @since 4.5.5
 	 * @return Avia_Gutenberg_Dynamic_Styles
 	 */
