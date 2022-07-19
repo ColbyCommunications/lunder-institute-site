@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c84a1b735c7940065c8a2d4f10dbc3f1",
+    "content-hash": "449f53a9f26a858c2ea55c542dda27a5",
     "packages": [
         {
             "name": "colbycommunications/advanced-custom-fields-pro",
@@ -3867,16 +3867,16 @@
         },
         {
             "name": "wp-cli/export-command",
-            "version": "v2.0.11",
+            "version": "v2.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/export-command.git",
-                "reference": "8dd137e0c739a59bb3d3de684a219dbb34473e11"
+                "reference": "fc647a75896efe9e4485e37aa9a03d430ff25532"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/export-command/zipball/8dd137e0c739a59bb3d3de684a219dbb34473e11",
-                "reference": "8dd137e0c739a59bb3d3de684a219dbb34473e11",
+                "url": "https://api.github.com/repos/wp-cli/export-command/zipball/fc647a75896efe9e4485e37aa9a03d430ff25532",
+                "reference": "fc647a75896efe9e4485e37aa9a03d430ff25532",
                 "shasum": ""
             },
             "require": {
@@ -3924,9 +3924,9 @@
             "homepage": "https://github.com/wp-cli/export-command",
             "support": {
                 "issues": "https://github.com/wp-cli/export-command/issues",
-                "source": "https://github.com/wp-cli/export-command/tree/v2.0.11"
+                "source": "https://github.com/wp-cli/export-command/tree/v2.0.12"
             },
-            "time": "2021-12-13T16:02:15+00:00"
+            "time": "2022-07-14T16:14:28+00:00"
         },
         {
             "name": "wp-cli/extension-command",
@@ -4295,16 +4295,16 @@
         },
         {
             "name": "wp-cli/media-command",
-            "version": "v2.0.13",
+            "version": "v2.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/media-command.git",
-                "reference": "011af49eaa31e1438c2567775fb175d412644b0d"
+                "reference": "bc4eca7a9b9a30663c5a8c8ed14708ccef4c0988"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/media-command/zipball/011af49eaa31e1438c2567775fb175d412644b0d",
-                "reference": "011af49eaa31e1438c2567775fb175d412644b0d",
+                "url": "https://api.github.com/repos/wp-cli/media-command/zipball/bc4eca7a9b9a30663c5a8c8ed14708ccef4c0988",
+                "reference": "bc4eca7a9b9a30663c5a8c8ed14708ccef4c0988",
                 "shasum": ""
             },
             "require": {
@@ -4351,9 +4351,9 @@
             "homepage": "https://github.com/wp-cli/media-command",
             "support": {
                 "issues": "https://github.com/wp-cli/media-command/issues",
-                "source": "https://github.com/wp-cli/media-command/tree/v2.0.13"
+                "source": "https://github.com/wp-cli/media-command/tree/v2.0.14"
             },
-            "time": "2022-05-28T07:51:36+00:00"
+            "time": "2022-07-14T16:16:59+00:00"
         },
         {
             "name": "wp-cli/mustangostang-spyc",
@@ -5410,15 +5410,15 @@
         },
         {
             "name": "wpackagist-plugin/wordpress-seo",
-            "version": "17.9",
+            "version": "19.3",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordpress-seo/",
-                "reference": "tags/17.9"
+                "reference": "tags/19.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.17.9.zip"
+                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.19.3.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
