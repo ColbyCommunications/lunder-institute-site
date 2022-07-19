@@ -24,6 +24,7 @@ disk: 2048
 # The mounts that will be performed when the package is deployed.
 mounts:
   "/web/wp-content/uploads": "shared:files/uploads"
+  "/web/wp-content/uploads/dynamic_avia": "shared:files/uploads/dynamic_avia"
   "/web/wp-content/cache": "shared:files/cache"
   "/web/wp-content/okta": "shared:files/plugins/okta"
   "/web/.well-known/pki-validation":
