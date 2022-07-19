@@ -25,9 +25,6 @@
 !/web/wp-content/themes/colby-lunder-institue
 !/web/wp-content/themes/enfold
 
-# baseinstall
-!/web/wp-content/themes/baseinstall
-
 #Ignore mac stuff
  *.DS_Store
 
