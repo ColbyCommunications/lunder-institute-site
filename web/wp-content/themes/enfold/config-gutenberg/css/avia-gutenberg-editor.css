@@ -1,4 +1,4 @@
-/* 
+/*
     Created on : 06.03.2019, 17:32:20
     Author     : Kriesi
     Used	   : In Gutenberg Editor Window, to match css styles of frontend blocks
@@ -6,7 +6,18 @@
 	.wp-block {
 	}
 
-	.editor-post-title textarea{ font-size: 34px; line-height: 1.1em; margin-bottom: 14px; font-weight: 600; }
+	.editor-block-list__block,
+	.editor-post-title textarea,
+	.editor-block-list__block .wp-block-heading{
+		font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
+
+	.editor-post-title textarea{
+		font-size: 34px;
+		line-height: 1.1em;
+		margin-bottom: 14px;
+		font-weight: 600;
+	}
 
 	p + h1, p + h2, p + h3, p + h4, p + h5, p + h6{
 	margin-top:1.5em;
@@ -137,7 +148,7 @@ font-size: smaller;
 	.lucida-sans-websave{	font-family:"Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Helvetica Neue, HelveticaNeue, Arial, sans-serif;  }
 	.tahoma-websave{		font-family: Tahoma, Verdana, Segoe, sans-serif;  }
 	.trebuchet-ms-websave{	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;  }
-	.verdana-websave{		font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;	}	
+	.verdana-websave{		font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;	}
 	.georgia-websave{		font-family:"Georgia", "Times New Roman", Times, serif;	}
 	.lucida-bright-websave{ font-family: Lucida Bright, Georgia, serif; }
 	.palatino-websave{		font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif; }
@@ -147,7 +158,7 @@ font-size: smaller;
 	.copperplate-websave{	font-family: Copperplate, Copperplate Gothic Light, fantasy; }
 	.papyrus-websave{		font-family: Papyrus, fantasy;  }
 	.brush-script-mt-websave{	font-family: Brush Script MT, cursive;  }
-	
+
 	/*default*/
 	h1, h2, h3, h4, h5, h6 {
 	/*	font-family: "Georgia", "Times New Roman", Helvetica, Arial, sans-serif; */
@@ -160,7 +171,7 @@ font-size: smaller;
 	h4 { font-size: 18px; line-height: 1.1em; margin-bottom: 4px; } /*21*/
 	h5 { font-size: 16px; line-height: 1.1em; }						/*17*/
 	h6 { font-size: 14px; line-height: 1.1em; }
-	
+
 	em { font-style: italic; }
 	strong, b{ font-weight: bold;  }
 	small { font-size: 80%; }
@@ -180,12 +191,12 @@ font-size: smaller;
 	}
 
 	blockquote small, blockquote cite, blockquote small a, blockquote cite a, blockquote a small, blockquote a cite{font-size: 12px;}
-	
-	
+
+
 .wp-block-heading h1,
 .wp-block-heading h2{
-	text-transform: uppercase;
 	letter-spacing: 1px;
+	text-transform: uppercase;
 }
 
 body.post-type-post h1,
@@ -194,7 +205,7 @@ body.post-type-post h2{
 	letter-spacing: 0;
 }
 
-/*	From Layout.css	
+/*	From Layout.css
 	===============			*/
 .editor-post-title__block textarea{
 	font-size: 16px;

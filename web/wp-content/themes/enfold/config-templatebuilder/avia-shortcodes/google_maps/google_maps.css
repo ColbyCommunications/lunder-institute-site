@@ -64,3 +64,11 @@ GOOGLE MAPS
 	display: block;
 }
 
+/* fix in Google Maps version > 3.45 scrolling to map on page load */
+#top .gm-ui-hover-effect{ 
+    display: none !important;
+}
+#top .gm-ui-hover-effect.avia-show-gm-notice{ 
+    display: block !important;
+}
+

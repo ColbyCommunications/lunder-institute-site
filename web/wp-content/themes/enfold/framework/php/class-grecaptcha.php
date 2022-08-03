@@ -1,487 +1,1068 @@
 <?php
-
 /**
  * Base class to handle Google reCAPTCHA API functionality.
- * 
+ *
+ * @tutorial https://developers.google.com/recaptcha/docs/faq
  * @since 4.5.3
- * @package AviaFramework
+ * @since 4.5.7.2  refactored by Günter
  */
+if( ! defined('AVIA_FW') ) { exit( 'No direct script access allowed' ); }
+
+
 if( ! class_exists( 'av_google_recaptcha' ) )
 {
-    class av_google_recaptcha {    
-        const API_URL = 'https://www.google.com/recaptcha/api.js';
-        const API_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';		
-        const AJAX_VERIFY_NONCE = 'av_google_recaptcha_verify_nonce';
-        const AJAX_SUBMISSION_NONCE = 'av_google_recaptcha_submission_nonce';
 
-        /**
-		 * Holds the instance of this class
-		 * 
-		 * @since 4.5.4
-		 * @var av_google_recaptcha 
+	class av_google_recaptcha
+	{
+
+		const API_URL           = 'https://www.google.com/recaptcha/api.js';
+		const API_VERIFY_URL    = 'https://www.google.com/recaptcha/api/siteverify';
+
+		const AJAX_VERIFY_NONCE = 'av_google_recaptcha_verify_nonce';
+		const TRANSIENT_PREFIX	= 'av_google_recaptcha_';
+
+		/**
+		 *
+		 * @since 4.5.7.2
+		 * @var av_google_recaptcha
 		 */
-		static private $_instance = null;
+		static protected $_instance = null;
 
-        /**
-         * The version of this class.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      string    $version   
-         */
-        public $version;
+		/**
+		 * Version of reCAPTCHA
+		 *
+		 * @since 4.5.7.2
+		 * @var string
+		 */
+		protected $version;
 
-        /**
-         * The google reCAPTCHA keys.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      array   
-         */
-        private $sitekeys;
+		/**
+		 *
+		 * @since 4.5.7.2
+		 * @var array
+		 */
+		protected $site_keys;
 
-        /**
-         * Notification for unverified users.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      array   
-         */
-        private $notice;
-        
-        /**
-         * The google reCAPTCHA api url.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      string   
-         */
-        private $api_url;
+		/**
+		 *
+		 * @since 4.5.7.2
+		 * @var array
+		 */
+		protected $secret_keys;
 
-        /**
-         * The google reCAPTCHA site verify url.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      string   
-         */
-        private $verify_url;
+		/**
+		 * Stores the last verified keys (user might change keys and save without verifying)
+		 *
+		 * @since 4.5.7.2
+		 * @var array					'' | 'string combination to verify' | 'verify_error'
+		 */
+		protected $verified_keys;
 
-        /**
-         * The google reCAPTCHA api version.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      string   
-         */
-        private $api_vn;
+		/**
+		 * V3 score threshold (0.0 - 1.0)
+		 *
+		 * @since 4.5.7.2
+		 * @var float
+		 */
+		protected $score;
 
-        /**
-         * The google reCAPTCHA status.
-         *
-         * @since    4.5.4
-         * @access   private
-         * @var      string   
-         */
-        public $verified;
+		/**
+		 * Backend theme color for V2
+		 *
+		 * @since 4.5.7.2
+		 * @var string
+		 */
+		protected $theme;
 
-        /**
+		/**
+		 * Contains the option value
+		 *
+		 * @since 4.5.7.2
+		 * @var string
+		 */
+		protected $display_badge;
+
+		/**
+		 * Contains the HTML for replacement text
+		 *
+		 * @since 4.6.2
+		 * @var string
+		 */
+		protected $display_badge_html;
+
+		/**
+		 *
+		 * @since 4.5.7.2
+		 * @var boolean|null
+		 */
+		protected $loading_prohibited;
+
+
+		/**
 		 * Return the instance of this class
-		 * 
-		 * @since 4.5.4
+		 *
+		 * @since 4.5.7.2
 		 * @return av_google_recaptcha
 		 */
 		static public function instance()
 		{
-			if( is_null( av_google_recaptcha::$_instance ) ) {
+			if( is_null( av_google_recaptcha::$_instance ) )
+			{
 				av_google_recaptcha::$_instance = new av_google_recaptcha();
 			}
-			
+
 			return av_google_recaptcha::$_instance;
-		}	
+		}
 
-        /**
-         * Initialize the class and set its properties.
-         *
-         * @since    4.5.4
-         * @param      string    $plugin_name       The name of the plugin.
-         * @param      string    $version    The version of this plugin.
-         */
-        public function __construct() {
-            $theme = wp_get_theme();
-            $version = $theme->get( 'Version' );
 
-            $this->version = $version;
-            $this->api_url = av_google_recaptcha::API_URL;
-            $this->verify_url = av_google_recaptcha::API_VERIFY_URL; 
+		/**
+		 *
+		 * @since 4.5.7.2
+		 */
+		protected function __construct()
+		{
+			$this->loading_prohibited = null;
+			$this->version = '';
+			$this->site_keys = array();
+			$this->secret_keys = array();
+			$this->verified_keys = array();
+			$this->score = 0.5;
+			$this->theme = 'light';
+			$this->display_badge = '';
+			$this->display_badge_html = '';
 
-            add_filter( 'avf_option_page_data_init', array( $this, 'register_admin_options' ), 10, 1 );
-            add_filter( 'avf_ajax_form_class', array( $this, 'modify_form_class' ), 10, 3 );
 
-            add_action( 'after_setup_theme', array( $this, 'get_api_version' ), 10 );
-            add_action( 'after_setup_theme', array( $this, 'get_api_keys' ), 15 );
-            
-            add_filter( 'avf_sc_contact_form_elements', array( $this, 'create_decoy' ), 10, 2 );
-            add_filter( 'avf_contact_form_submit_button_attr', array( $this, 'modify_button_attributes' ), 10, 3 );
+			//	needed because not all framework functions are loaded at this point
+			add_action( 'after_setup_theme', array( $this, 'handler_after_setup_theme' ), 10 );
 
-            add_action( 'wp_enqueue_scripts', array( $this, 'register_recaptcha_scripts' ), 10 );
-            add_action( 'wp_enqueue_scripts', array( $this, 'register_api_script' ), 10 );
-            
-            add_action( 'wp_ajax_avia_ajax_recaptcha_verify', array( $this, 'verify_token' ), 10 );
-            add_action( 'wp_ajax_nopriv_avia_ajax_recaptcha_verify', array( $this, 'verify_token' ), 10 );
-        }
-        
-        public function register_api_script()
-        {
-            if( ! $this->is_recaptcha_active() ) {
-                return false;
-            }
+			add_action( 'init', array( $this, 'handler_wp_register_scripts' ), 20 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'handler_wp_enqueue_scripts' ), 500 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'handler_wp_admin_enqueue_scripts' ), 500 );
 
-            $api_key = $this->get_public_key();
-            $api_vn = $this->api_vn;
-            $api_url = $this->api_url;
+			add_filter( 'body_class', array( $this, 'handler_body_class' ), 500, 2 );
 
-            $params = array(
-                'onload' => 'aviaRecaptchaRender',
-                'render' => $api_vn == 'v2' ? 'explicit' : $api_key,
-            );
+			//	We hook with low priority as reCAPTCHA verification should overrule other positive checks
+			add_filter( 'avf_form_send', array( $this, 'handler_avf_form_send' ), 999999, 4 );
 
-            $api_url = add_query_arg( $params, $api_url );
+			add_action( 'wp_ajax_avia_recaptcha_verify_frontend', array( $this, 'handler_recaptcha_verify_frontend' ), 10 );
+			add_action( 'wp_ajax_nopriv_avia_recaptcha_verify_frontend', array( $this, 'handler_recaptcha_verify_frontend' ), 10 );
+		}
 
-            wp_register_script( 'avia-recaptcha-api', $api_url, array( 'avia-default' ), '1.0.0', false);
-            wp_enqueue_script( 'avia-recaptcha-api' );
-        }
+		/**
+		 *
+		 * @since 4.5.7.2
+		 */
+		public function __destruct()
+		{
+			unset( $this->site_keys );
+			unset( $this->secret_keys );
+			unset( $this->verified_keys );
+		}
 
-        public function register_recaptcha_scripts() {
-            if( ! $this->is_recaptcha_active() ) {
-                return false;
-            }
+		/**
+		 * @since 4.5.7.2
+		 */
+		public function handler_after_setup_theme()
+		{
+			$this->version = avia_get_option( 'avia_recaptcha_version', '' );
 
-            $api_vn = $this->api_vn;
-            $notice = $this->get_notice();
-            $template_url = get_template_directory_uri();
+			$this->site_keys['avia_recaptcha_v2'] = avia_get_option( 'avia_recaptcha_pkey_v2', '' );
+			$this->site_keys['avia_recaptcha_v3'] = avia_get_option( 'avia_recaptcha_pkey_v3', '' );
 
-            wp_register_script(
-                'avia-recaptcha',
-                AVIA_JS_URL . 'avia_recaptcha.js',
-                array( 'jquery' ),
-                $this->version,
-                false
-            );
+			$this->secret_keys['avia_recaptcha_v2'] = avia_get_option( 'avia_recaptcha_skey_v2', '' );
+			$this->secret_keys['avia_recaptcha_v3'] = avia_get_option( 'avia_recaptcha_skey_v3', '' );
 
-            wp_enqueue_script( 'avia-recaptcha' );
+			$this->verified_keys['avia_recaptcha_v2'] = avia_get_option( 'recaptcha_verified_keys_v2', '' );
+			$this->verified_keys['avia_recaptcha_v3'] = avia_get_option( 'recaptcha_verified_keys_v3', '' );
 
-            wp_localize_script(
-                'avia-recaptcha',
-                'avia_recaptcha',
-                array(
-                    'verify_nonce' => wp_create_nonce( av_google_recaptcha::AJAX_VERIFY_NONCE ),
-                    'submission_nonce' => wp_create_nonce( av_google_recaptcha::AJAX_SUBMISSION_NONCE ),
-            ) );
-        }
+			$this->score = avia_get_option( 'avia_recaptcha_score', 5 );
+			$this->score = is_numeric( $this->score ) ? $this->score / 10.0 : 0.5;
 
-        public function get_api_version() {
-            $api_vn = avia_get_option( 'avia_recaptcha_version' );
-            $vn = 'v2';
+			$this->display_badge = avia_get_option( 'avia_recaptcha_badge', '' );
+			if( ! current_theme_supports( 'avia_recaptcha_show_legal_information' ) )
+			{
+				$this->display_badge = 'contact_only_message';
+			}
 
-            if( $api_vn == 'avia_recaptcha_v3' ) {
-                $vn = 'v3';
-            }
-           
-            if( $api_vn == '' ) {
-                $vn = null;
-            }
+			/**
+			 * see https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge-what-is-allowed
+			 *
+			 * @since 4.5.7.2
+			 * @param string
+			 * @return string
+			 */
+			$badge =	'<div class="av-google-badge-message hidden">';
+			$badge .=		__( 'This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.', 'avia_framework' );
+			$badge .=	'</div>';
 
-            $this->api_vn = $vn;
-        }
+			$this->display_badge_html = apply_filters( 'avf_google_recaptcha_badge_content', $badge );
 
-        public function get_api_keys() {
-            $secret_key = avia_get_option( 'avia_recaptcha_skey_' . $this->api_vn );
-            $public_key = avia_get_option( 'avia_recaptcha_pkey_' . $this->api_vn );
+		}
 
-            if( empty( $secret_key ) || empty( $public_key ) ) {
-                return new WP_Error( 'enfold-recaptcha-sitekeys-missing', __( "The recaptcha keys key are missing.", "avia_framework" ) );
-            }
+		/**
+		 * @since 4.5.7.2
+		 */
+		public function handler_wp_register_scripts()
+		{
+			$vn = avia_get_theme_version();
 
-            $this->sitekeys = array(
-                'public' => $public_key,
-                'secret' => $secret_key, 
-            );
+			wp_register_script( 'avia_google_recaptcha_front_script' , AVIA_JS_URL . 'conditional_load/avia_google_recaptcha_front.js', array( 'jquery' ), $vn, true );
+			wp_register_script( 'avia_google_recaptcha_api_script' , AVIA_JS_URL . 'conditional_load/avia_google_recaptcha_api.js', array( 'jquery' ), $vn, true );
+		}
 
-            if( $this->api_vn == 'v3' ) {
-                $this->sitekeys['rekey'] = $public_key = avia_get_option( 'avia_recaptcha_pkey_v2' );
-            }     
-        }
+		/**
+		 * Frontend we load conditionally. This script checks after pageload if loading of main scripts are necessary.
+		 *
+		 * @since 4.5.7.2
+		 */
+		public function handler_wp_enqueue_scripts()
+		{
+			if( $this->is_loading_prohibited() )
+			{
+				return;
+			}
 
-        public function get_public_key() {
-            if ( empty( $this->sitekeys ) || ! is_array( $this->sitekeys ) ) {
-                return false;
-            }
-        
-            return $this->sitekeys['public'];
-        }
+			wp_enqueue_script( 'avia_google_recaptcha_front_script' );
 
-        public function get_secret_key() {
-            if ( empty( $this->sitekeys ) || ! is_array( $this->sitekeys ) ) {
-                return false;
-            }
+			$args = array(
+					'version'			=> $this->get_version(),
+					'site_key2'			=> $this->get_site_key( 'avia_recaptcha_v2' ),
+					'site_key3'			=> $this->get_site_key( 'avia_recaptcha_v3' ),
+					'api'				=> av_google_recaptcha::API_URL,
+					'avia_api_script'	=> AVIA_JS_URL . 'conditional_load/avia_google_recaptcha_api.js',
+					'theme'				=> $this->get_theme(),
+					'score'				=> $this->get_score(),
+					'verify_nonce'		=> wp_create_nonce( av_google_recaptcha::AJAX_VERIFY_NONCE ),
+//					'submission_nonce'	=> wp_create_nonce( av_google_recaptcha::AJAX_SUBMISSION_NONCE ),
+					'cannot_use'		=> '<h3 class="av-recaptcha-error-main">' . __( 'Sorry, a problem occurred trying to communicate with Google reCAPTCHA API. You are currently not able to submit the contact form. Please try again later - reload the page and also check your internet connection.', 'avia_framework' ) . '</h3>',
+					'init_error_msg'	=> __( 'Initial setting failed. Sitekey 2 and/or sitekey 3 missing in frontend.', 'avia_framework' ),
+					'v3_timeout_pageload'	=> __( 'Timeout occurred connecting to V3 API on initial pageload', 'avia_framework' ),
+					'v3_timeout_verify'	=> __( 'Timeout occurred connecting to V3 API on verifying submit', 'avia_framework' ),
+					'v2_timeout_verify'	=> __( 'Timeout occurred connecting to V2 API on verifying you as human. Please try again and check your internet connection. It might be necessary to reload the page.', 'avia_framework' ),
+					'verify_msg'		=> __( 'Verify....', 'avia_framework' ),
+					'connection_error'	=> __( 'Could not connect to the internet. Please reload the page and try again.', 'avia_framework' ),
+					'validate_first'	=> __( 'Please validate that you are a human first', 'avia_framework' ),
+					'validate_submit'	=> __( 'Before submitting we validate that you are a human first.', 'avia_framework' ),
+					'no_token'			=> __( 'Missing internal token on valid submit - unable to proceed.', 'avia_framework' ),
+					'invalid_version'	=> __( 'Invalid reCAPTCHA version found.', 'avia_framework' ),
+					'api_load_error'	=> __( 'Google reCAPTCHA API could not be loaded.', 'avia_framework' ),
+				);
 
-            return $this->sitekeys['secret'];
-        }
+			wp_localize_script( 'avia_google_recaptcha_front_script', 'AviaReCAPTCHA_front', $args );
+		}
 
-        public function get_reverify_key() {
-            if ( $this->api_vn == 'v2' ) {
-                return false;
-            }
-        
-            return $this->sitekeys['rekey'];
-        }
 
-        public function get_notice() {
-            $notice = avia_get_option( 'avia_recaptcha_notice' );
-            $this->notice = $notice;
-            return $notice;
-        }
+		/**
+		 *
+		 * @since 4.5.7.2
+		 */
+		public function handler_wp_admin_enqueue_scripts()
+		{
+			/**
+			 * Some 3rd party plugins need to supress loading scripts
+			 * Not loading the scripts might result in breaking backend !!!
+			 * Check if everything is working as expected.
+			 *
+			 * @since 4.7.5.1
+			 * @param boolean
+			 * @return string			return 'skip_loading' to prohibit loading of backend scripts
+			 */
+			$skip_loading = apply_filters( 'avf_skip_enqueue_scripts_backend_grecaptcha', '' );
 
-        public function is_recaptcha_active() {
-            $api_vn = $this->api_vn;
+			if( 'skip_loading' === $skip_loading )
+			{
+				return;
+			}
 
-            if( $api_vn == '' ) {
-                return false;
-            }
+			/**
+			 * In backend we must enqueue to validate keys and localize script
+			 */
+			wp_enqueue_script( 'avia_google_recaptcha_front_script' );
 
-            $secret_key = $this->get_secret_key();
-            $public_key = $this->get_public_key();
+			$args = array(
+					'version'       => $this->get_version(),
+//					'site_key'      => $this->get_site_key(),
+					'api'           => av_google_recaptcha::API_URL,
+					'theme'			=> $this->get_theme(),
+					'api_load_error'	=> __( 'Google reCAPTCHA API could not be loaded. We are not able to verify keys. Check your internet connection and try again.', 'avia_framework' ),
+					'invalid_version'	=> __( 'Please select Version 2 or 3 for reCAPTCHA', 'avia_framework' ),
+					'invalid_keys'		=> __( 'You have to enter a site key and a secret key to verify it.', 'avia_framework' ),
+					'v3_timeout'		=> __( 'A network timeout problem occurred. Could be caused by an invalid V3 sitekey. Please recheck the key and try again.', 'avia_framework' )
+	            );
 
-            return $public_key && $secret_key;
-        }
+			wp_localize_script( 'avia_google_recaptcha_front_script', 'AviaReCAPTCHA_data', $args );
+		}
 
-        public function modify_form_class( $class, $id, $params ) {
-            if( ! $this->is_recaptcha_active() || isset( $params['mailchimp'] ) ) {
-                return $class;
-            }
+		/**
+		 * We add classes to allow js script to decide what to load
+		 *
+		 * @since 4.5.7.2
+		 * @param array $classes
+		 * @param array $class
+		 * @return array
+		 */
+		public function handler_body_class( array $classes, array $class )
+		{
+			if( $this->is_loading_prohibited() )
+			{
+				return $classes;
+			}
 
-            $class .= ' av-form-recaptcha av-form-labels-style';
+			/**
+			 * Allows to disable recaptcha for special pages.
+			 * Only makes sense for V3 as V2 is only loaded if needed on page/post.
+			 * Be careful not to disable it on pages where you need it !!!
+			 *
+			 * @since 4.5.7.2
+			 * @param boolean
+			 * @return boolean
+			 */
+			$disable = apply_filters( 'avf_disable_recaptchaV3_for_post', false );
 
-            
-            if( $this->api_vn == 'v3' ) {
-                $class .= ' av-form-input-visible';
-            }
+			if( false === $disable )
+			{
+				$classes[] = 'av-recaptcha-enabled';
+			}
 
-            return $class;
-        }
+			if( $this->show_extended_errors() )
+			{
+				$classes[] = 'av-recaptcha-extended-errors';
+			}
 
-        public function modify_button_attributes( $atts, $id, $params ) {
-            if ( empty( $this->sitekeys ) || ! is_array( $this->sitekeys ) || isset( $params['mailchimp'] ) ) {
-                return $atts;
-            }
+			if( in_array( $this->display_badge, array( 'contact_only_message', 'hide' ) ) )
+			{
+				$classes[] = 'av-google-badge-hide';
+			}
 
-            $api_vn = $this->api_vn;
-            $public_key = $this->get_public_key();
-            $notice = $this->get_notice();
-            
-            $atts .= ' disabled=disabled';
-            if( $notice != '' ) $atts .= ' data-notice=' . urlencode( $notice );
-            $atts .= ' data-sitekey=' . $public_key;
-            $atts .= ' data-theme=light';
-            $atts .= ' data-size=normal';
-            $atts .= ' data-tabindex=' . $id;
-	    $atts .= ' data-submit-label=' . urlencode( $params['submit'] );
-            $atts .= ' data-callback=aviaRecaptchaSuccess';
-            $atts .= ' data-expired-callback=aviaRecaptchaSuccess';
-            $atts .= ' data-vn=' . $api_vn;
-            
-            return $atts;
-        } 
+			return $classes;
+		}
 
-        public function register_admin_options( $elements ) {
-            $elements[] =	array(
-                "name" => __("Google ReCAPTCHA",'avia_framework'),
-                "desc" => __("Add a Google reCAPTCHA widget to the theme's contact form element.",'avia_framework'),
-                "id" => "avia_recaptcha",
-                "std" => "",
-                "slug"	=> "google",
-                "type" => "heading",
-                "nodescription"=>true);
+		/**
+		 * Returns the selected version for the recaptcha
+		 *
+		 * @since 4.5.7.2
+		 * @return string		'' | 'avia_recaptcha_v2' | 'avia_recaptcha_v3'
+		 */
+		public function get_version()
+		{
+			return $this->version;
+		}
 
-            $recaptcha_admin = 'https://www.google.com/recaptcha/admin';
+		/**
+		 * Returns the site key for the selected version
+		 *
+		 * @since 4.5.7.2
+		 * @param string $version
+		 * @return string
+		 */
+		public function get_site_key( $version = null )
+		{
+			if( is_null( $version ) )
+			{
+				$version = $this->get_version();
+			}
 
-            $elements[] =	array(
-                "slug"	=> "google",
-                "name" 	=> __("Select Google reCAPTCHA Version", 'avia_framework'),
-                "desc" 	=> 
-                __("Choose the type of reCAPTCHA and then fill in the following fields with your <a href='{$recaptcha_admin}'>new API key pair</a>.", 'avia_framework'),
-                "id" 	=> "avia_recaptcha_version",
-                "type" 	=> "select",
-                "std" 	=> "",
-                "subtype" => array( __('reCAPTCHA v2', 'avia_framework') => 'avia_recaptcha_v2',
-                                    __('reCAPTCHA v3', 'avia_framework') => 'avia_recaptcha_v3',
-                                    ));
+			return isset( $this->site_keys[ $version ] ) ? $this->site_keys[ $version ] : '';
+		}
 
-            $elements[] =	array(
-                "slug"	=> "google",
-                "name" 	=> __("Site Key", 'avia_framework'),
-                "desc" 	=> __('Enter the v2 API public or site key here.', 'avia_framework'),
-                "id" 	=> "avia_recaptcha_pkey_v2",
-                "type" 	=> "text",
-                "required" => array('avia_recaptcha_version','avia_recaptcha_v2'),
-                );
+		/**
+		 * Returns the secret key for the selected version
+		 *
+		 * @since 4.5.7.2
+		 * @param string $version
+		 * @return string
+		 */
+		public function get_secret_key( $version = null )
+		{
+			if( is_null( $version ) )
+			{
+				$version = $this->get_version();
+			}
 
-            $elements[] =	array(
-                "slug"	=> "google",
-                "name" 	=> __("Secret Key", 'avia_framework'),
-                "desc" 	=> __("Enter the v2 API secret key here.", 'avia_framework'),
-                "id" 	=> "avia_recaptcha_skey_v2",
-                "required" => array('avia_recaptcha_version','avia_recaptcha_v2'),
-                "type" 	=> "text"
-                );
+			return isset( $this->secret_keys[ $version ] ) ? $this->secret_keys[ $version ] : '';
+		}
 
-            $elements[] =	array(
-                "slug"	=> "google",
-                "name" 	=> __("Site Key", 'avia_framework'),
-                "desc" 	=> __('Enter the v3 API public or site key here.', 'avia_framework'),
-                "id" 	=> "avia_recaptcha_pkey_v3",
-                "type" 	=> "text",
-                "required" => array('avia_recaptcha_version','avia_recaptcha_v3'),
-                );
 
-            $elements[] =	array(
-                "slug"	=> "google",
-                "name" 	=> __("Secret Key", 'avia_framework'),
-                "desc" 	=> __("Enter the v3 API secret key here.", 'avia_framework'),
-                "id" 	=> "avia_recaptcha_skey_v3",
-                "required" => array('avia_recaptcha_version','avia_recaptcha_v3'),
-                "type" 	=> "text"
-                );
+		/**
+		 * Returns the last saved verified key string:
+		 *		"version site_key secret_key"
+		 *
+		 * @since 4.5.7.2
+		 * @param string $version
+		 * @return string
+		 */
+		public function get_verified_keys( $version = null )
+		{
+			if( is_null( $version ) )
+			{
+				$version = $this->get_version();
+			}
 
-            // todo: score thresholds https://developers.google.com/recaptcha/docs/v3
-            // $elements[] =	array(
-            //     "slug"	=> "google",
-            //     "name" 	=> __("Score Threshold", 'avia_framework'),
-            //     "desc" 	=> __("reCAPTCHA v3 returns a score (1.0 is very likely a good interaction, 0.0 is very likely a bot). Based on the score, you can take variable action in the context of your site like displaying the reCAPTCHA v2 if the score is below the expected score.", 'avia_framework'),
-            //     "id" 	=> "avia_recaptcha_threshold",
-            //     "required" => array('avia_recaptcha_version','avia_recaptcha_v3'),
-            //     "type" 	=> "select",
-            //     "std" => "0.5",
-            //     "subtype" => array(
-            //         '0.1' =>'0.1',
-            //         '0.2' =>'0.2',
-            //         '0.3' =>'0.3',
-            //         '0.4' =>'0.4',
-            //         '0.5' =>'0.5',
-            //         '0.6' =>'0.6',
-            //         '0.7' =>'0.7',
-            //         '0.8' =>'0.8',
-            //         '0.9' =>'0.9',
-            //         '1' =>'1',
-            //         ));
-            //     );
+			return isset( $this->verified_keys[ $version ] ) ? $this->verified_keys[ $version ] : '';
+		}
 
-            $elements[] =	array(
-                "slug"	=> "google",
-                "name" 	=> __("Widget Notice", 'avia_framework'),
-                "desc" 	=> __('Display a message or notification for unverified users.', 'avia_framework'),
-                "id" 	=> "avia_recaptcha_notice",
-                "type" 	=> "text",
-                "std" => __('', 'avia_framework'),
-                );
+		/**
+		 * Returns the float value for selected score threshold (0.0 - 1.0)
+		 *
+		 * @since 4.5.7.2
+		 * @return float
+		 */
+		public function get_score()
+		{
+			return $this->score;
+		}
 
-            return $elements;
-        }	
+		/**
+		 * Returns the necessary HTML if user selected to use
+		 *
+		 * @since 4.5.7.2
+		 * @return string
+		 */
+		public function get_display_badge_html()
+		{
+			if( ! in_array( $this->display_badge, array( 'message', 'contact_only_message' ) ) )
+			{
+				return '';
+			}
 
-        public function verify_token()
-        {  
-            $is_human = false;
-            $g_recaptcha_alert = $this->get_recaptcha_response( 'g_recaptcha_alert' );
-            $g_recaptcha_response = $this->get_recaptcha_response( 'g_recaptcha_response' );
+			return $this->display_badge_html;
+		}
 
-            if( empty( $g_recaptcha_response ) || empty( $g_recaptcha_alert ) ) {
-                $this->verified = false;
-                return $is_human;
-            }
+				/**
+		 * Returns the selected backend theme style
+		 *
+		 * @since 4.5.7.2
+		 * @return string				'light' | 'dark'
+		 */
+		public function get_theme()
+		{
+			if( ! in_array( $this->theme, array( 'light', 'dark' ) ) )
+			{
+				$this->theme = 'light';
+			}
 
-            if( ! $this->is_recaptcha_active() ) {
-                $this->verified = false;
-                return $is_human;
-            }
+			return $this->theme;
+		}
 
-            $verify_url = $this->verify_url;
-            $secret_key = $this->get_secret_key();
+		/**
+		 *
+		 * @since 4.5.7.2
+		 * @return boolean
+		 */
+		public function is_loading_prohibited()
+		{
+			if( is_null( $this->loading_prohibited ) )
+			{
+				//	Check backend setting
+				$prohibited = ! $this->is_activated() || ! $this->are_keys_set();
 
-            $response = wp_safe_remote_post( $verify_url, array(
-                'body' => array(
-                    'secret' => $secret_key,
-                    'response' => $g_recaptcha_response,
-                    'remoteip' => $_SERVER['REMOTE_ADDR'],
-                ),
-            ) );
-            
-            if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-                $this->verified = false;
-                return $is_human;
-            }
+				/**
+				 * Filter allows to supress loading of script on desired pages
+				 *
+				 * @since 4.5.7.2
+				 * @param boolean
+				 * @return boolean
+				 */
+				$prohibited = apply_filters( 'avf_load_google_recaptcha_api_prohibited', $prohibited );
 
-            $response = wp_remote_retrieve_body( $response );
-            $response = json_decode( $response, true );
+				$this->loading_prohibited = is_bool( $prohibited ) ? $prohibited : true;
+			}
 
-            if( isset( $response['success'] ) && true == $response['success'] ) {
-                $this->verified = true;  
-       
-                foreach( $g_recaptcha_alert as $key => $alert ) {
-                    $name = 'avia_recaptcha_transient_' . $alert;
-                    $token = get_transient( $name );
-                    
-                    if ( false === $token ) {
-                        set_transient( $name, $alert, 120 * MINUTE_IN_SECONDS );
-                    }
-                }  
-            } 
+			return $this->loading_prohibited;
+		}
 
-            wp_die( json_encode( $response ) );
-        }
+		/**
+		 * Checks if the version activates gRECAPTCHA
+		 *
+		 * @since 4.5.7.2
+		 * @param string $version
+		 * @return boolean
+		 */
+		public function is_activated( $version = null )
+		{
+			if( is_null( $version ) )
+			{
+				$version = $this->get_version();
+			}
 
-        public function is_human() {
-            return $this->verified;
-        }
+			return in_array( $version, array( 'avia_recaptcha_v2', 'avia_recaptcha_v3' ) );
+		}
 
-        public function get_recaptcha_response( $response ) {
-            if ( isset( $_POST[$response] ) ) {
-                return $_POST[$response];
-            }
-        
-            return false;
-        }
+		/**
+		 * Checks if all necessary keys are set for a version.
+		 * Returns false if an invalid version or if disabled
+		 *
+		 * @since 4.5.7.2
+		 * @param string $version
+		 * @return boolean
+		 */
+		public function are_keys_set( $version = null )
+		{
+			if( is_null( $version ) )
+			{
+				$version = $this->get_version();
+			}
 
-        function create_decoy( $form_fields, $atts ) {
-            if( ! $this->is_recaptcha_active() ) {
-                return $form_fields;
-            }
-            
-            $token = $this->generate_token( 'avia_recaptcha' );
-            $decoy['test'] = array('label' => '', 'type' => 'hidden', 'value' => $token);
-            $form_fields = $decoy + $form_fields;
+			$keys2 = ! empty( $this->get_site_key( 'avia_recaptcha_v2' ) ) && ! empty( $this->get_secret_key( 'avia_recaptcha_v2' ) );
+			$keys3 = ! empty( $this->get_site_key( 'avia_recaptcha_v3' ) ) && ! empty( $this->get_secret_key( 'avia_recaptcha_v3' ) );
 
-            return $form_fields;
-        }
+			if( 'avia_recaptcha_v2' == $version )
+			{
+				return $keys2;
+			}
 
-        function generate_token( $form ) {
-            $token = md5( uniqid( microtime(), true ) );  
+			if( 'avia_recaptcha_v3' == $version )
+			{
+				return $keys2 && $keys3;
+			}
 
-            return $token;
-        }
-    }
+			return false;
+		}
+
+		/**
+		 * Allow admins to see more detailed error messages
+		 *
+		 * @since 4.5.7.2
+		 * @return boolean
+		 */
+		protected function show_extended_errors()
+		{
+			$show_extended_errors = current_user_can( 'manage_options' );
+
+			/**
+			 *
+			 *
+			 * @since 4.5.7.2
+			 * @param boolean
+			 * @return boolean				return true to show extended messages
+			 */
+			return apply_filters( 'avf_recaptcha_show_extended_error_messages', $show_extended_errors );
+		}
+
+		/**
+		 * Verify a token with gRECAPTCHA.
+		 *
+		 * @since 4.5.7.2
+		 * @param string $token
+		 * @param string|null $secretkey			if null -> verification of key
+		 * @return array|\WP_Error					check $result['success'] = true
+		 */
+		protected function verify_token( $token, $secretkey = null )
+		{
+			if( is_null( $secretkey ) )
+			{
+				$secretkey = $this->get_secret_key();
+			}
+
+			$params = array(
+						'body' => array(
+										'secret'      => $secretkey,
+										'response'    => $token,
+										'remoteip'    => $_SERVER['REMOTE_ADDR'],
+									)
+						);
+
+		    $response = wp_safe_remote_post( av_google_recaptcha::API_VERIFY_URL, $params );
+
+			if( $response instanceof WP_Error )
+			{
+				$msg = $response->get_error_messages();
+				$msg = implode( '<br />', $msg );
+
+				return new WP_Error( 'site_down', sprintf( __( 'Unable to communicate with gRECAPTCHA: <br /><br />%s', 'avia_framework' ), $msg ) );
+			}
+
+			$code = wp_remote_retrieve_response_code( $response );
+			if ( 200 != $code )
+			{
+				$msg = wp_remote_retrieve_response_message( $response );
+				if( empty( $msg ) )
+				{
+					$msg = __( 'Unknown error code', 'avia_framework' );
+				}
+				return new WP_Error( 'invalid_response', sprintf( __( 'gRECAPTCHA returned error %d (= %s).', 'avia_framework' ), $code, $msg ) );
+			}
+
+
+			$body = wp_remote_retrieve_body( $response );
+		    $result = json_decode( $body, true );
+
+			if( true === $result['success'] )
+			{
+				return $result;
+			}
+
+			if( isset( $result['error-codes'] ) && is_array( $result['error-codes'] ) )
+			{
+				foreach( $result['error-codes'] as $key => $value )
+				{
+					switch( $value )
+					{
+						case 'missing-input-secret':
+							$result['error-codes'][ $key ] = __( 'The secret parameter is missing.', 'avia_framework' );
+							break;
+						case 'invalid-input-secret':
+							$result['error-codes'][ $key ] = __( 'The secret parameter is invalid or malformed.', 'avia_framework' );
+							break;
+						case 'missing-input-response':
+							$result['error-codes'][ $key ] = __( 'The response parameter is missing.', 'avia_framework' );
+							break;
+						case 'invalid-input-response':
+							$result['error-codes'][ $key ] = __( 'The response parameter is invalid or malformed.', 'avia_framework' );
+							break;
+						case 'bad-request':
+							$result['error-codes'][ $key ] = __( 'The request is invalid or malformed.', 'avia_framework' );
+							break;
+						case 'timeout-or-duplicate':
+							$result['error-codes'][ $key ] = __( 'The response is no longer valid: either is too old or has been used previously.', 'avia_framework' );
+							break;
+						default:
+							$result['error-codes'][ $key ] =  sprintf( __( '%s - unknown error code', 'avia_framework' ), $value );
+					}
+				}
+			}
+
+			return $result;
+		}
+
+		/**
+		 * Callback - verifies the token and creates a transient if valid.
+		 * In case of a false score returns
+		 *
+		 * @since 4.5.7.2
+		 */
+		public function handler_recaptcha_verify_frontend()
+		{
+			header( "Content-Type: application/json" );
+			$response = array(
+								'success'		=> false,
+								'alert'			=> '',
+								'score_failed'	=> false,
+								'transient'		=> ''
+							);
+
+			$show_extended_errors = $this->show_extended_errors();
+
+			/**
+			 * Nonce check removed with 4.7.4.1
+			 *
+			 * Makes problems with caching plugins.
+			 * As reCaptcha is bound to a site verifying the reCaptcha should be enough to verify a valid callback.
+			 *
+			 */
+//			$nonce = isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : '';
+//			$result = wp_verify_nonce( $nonce, av_google_recaptcha::AJAX_VERIFY_NONCE );
+//
+//			if( 1 !== $result )
+//			{
+//				$response['alert'] = __( 'Sorry, but the session time for this page has expired. Please reload the page.', 'avia_framework' );
+//				if( true === $show_extended_errors )
+//				{
+//					$response['alert'] .= '<br />' . __( 'WP Nonce check failed.', 'avia_framework' );
+//				}
+//
+//				echo json_encode( $response );
+//				exit;
+//			}
+
+			$version = isset( $_REQUEST['version'] ) ? $_REQUEST['version'] : '';
+			$token = isset( $_REQUEST['token'] ) ? $_REQUEST['token'] : '';
+			$score = isset( $_REQUEST['score'] ) ? $_REQUEST['score'] : -1;
+			$action = isset( $_REQUEST['recaptcha_action'] ) ? $_REQUEST['recaptcha_action'] : '';
+			$secret_key = $this->get_secret_key( $version );
+
+
+			$check = $this->verify_token( $token, $secret_key );
+
+			$validate_error = __( 'Sorry, but the verification failed. Please reload the page and try again.', 'avia_framework' );
+
+			if( true !== $check['success'] )
+			{
+				$response['alert'] = $validate_error;
+				if( true === $show_extended_errors )
+				{
+					$response['alert'] .= '<br />' . __( 'API check returned false.', 'avia_framework' );
+				}
+
+				echo json_encode( $response );
+				exit;
+			}
+
+			if( 'avia_recaptcha_v3' == $version )
+			{
+				if( ! isset( $check['score'] ) || ! isset( $check['action'] ) || ( $check['action'] != $action ) )
+				{
+					$response['alert'] = $validate_error;
+					if( true === $show_extended_errors )
+					{
+						$response['alert'] .= '<br />' . __( 'Invalid V3 response. Actions:', 'avia_framework' ) . $check['action'] . '/' . $action;
+					}
+
+					echo json_encode( $response );
+					exit;
+				}
+
+				if( (float) $score >= (float)$check['score'] )
+				{
+					if( true === $show_extended_errors )
+					{
+						$response['score_failed'] = sprintf( __( 'Score requested %s - returned %s', 'avia_framework' ), $score, $check['score'] );
+					}
+					else
+					{
+						$response['score_failed'] = true;
+					}
+
+					echo json_encode( $response );
+					exit;
+				}
+			}
+
+			$transient = uniqid( av_google_recaptcha::TRANSIENT_PREFIX, true );
+
+			/**
+			 * @since 4.5.7.2
+			 * @param int
+			 * @return int
+			 */
+			$expiration = 30 * MINUTE_IN_SECONDS;
+			$expiration = apply_filters( 'avf_recaptcha_transient_expiration', $expiration );
+			if( ! is_numeric( $expiration ) )
+			{
+				$expiration = 30 * MINUTE_IN_SECONDS;
+			}
+
+			set_transient( $transient, $version, $expiration );
+
+			$response['success'] = true;
+			$response['transient'] = $transient;
+
+			echo json_encode( $response );
+			exit;
+		}
+
+
+		/**
+		 * Check if we have a valid token.
+		 * This is also a fallback to prevent bots using same token several times.
+		 * In case $proceed !== true we also remove the transient to clean up.
+		 *
+		 * @since 4.5.7.2
+		 * @param boolean $proceed
+		 * @param array $new_post
+		 * @param array $form_params
+		 * @param avia_form $form_class
+		 * @return boolean|null						true if you want to continue | null for error message
+		 */
+		public function handler_avf_form_send( $proceed, array $new_post, array $form_params, avia_form $form_class )
+		{
+			$use_recaptcha = false;
+
+			foreach( $form_class->form_elements as $element )
+			{
+				if( isset( $element['type'] ) && ( 'grecaptcha' == $element['type'] ) )
+				{
+					$use_recaptcha = $element;
+					break;
+				}
+			}
+
+			if( false === $use_recaptcha )
+			{
+				return $proceed;
+			}
+
+			$show_extended_errors = $this->show_extended_errors();
+			$token = isset( $element['token_input'] ) ? $element['token_input'] : '';
+			$token_value = ( isset( $_REQUEST[ $token ] ) ) ? trim( $_REQUEST[ $token ] ) : '';
+			$requested_version = ( isset( $_REQUEST[ $token . '-version' ] ) ) ? trim( $_REQUEST[ $token . '-version' ] ) : $element['version'];
+
+			if( true !== $proceed )
+			{
+				if( ! empty( $token_value ) )
+				{
+					delete_transient( $token_value );
+				}
+
+				return $proceed;
+			}
+
+			$reload_msg = '<br />' . __( 'Form could not be submitted. Please reload page and try again.', 'avia_framework' );
+
+			if( empty( $token_value ) )
+			{
+				$form_class->submit_error .= __( 'Invalid form for reCAPTCHA sent.', 'avia_framework' ) . $reload_msg;
+				if( $show_extended_errors )
+				{
+					$form_class->submit_error .= '<br />' . __( 'Name for token field was missing.', 'avia_framework' );
+				}
+				return null;
+			}
+
+			$version = get_transient( $token_value );
+
+			if( false === $version )
+			{
+				$form_class->submit_error .= __( 'Token to validate form already expired.', 'avia_framework' ) . $reload_msg;
+				if( $show_extended_errors )
+				{
+					$form_class->submit_error .= '<br />' . __( 'Transient to verify form was missing or expired.', 'avia_framework' );
+				}
+				return null;
+			}
+
+			delete_transient( $token_value );
+
+			if( $version != $requested_version )
+			{
+				$form_class->submit_error .= __( 'Token to validate form is not valid.', 'avia_framework' ) . $reload_msg;
+				if( $show_extended_errors )
+				{
+					$form_class->submit_error .= '<br />' . __( 'reCAPTCHA version in transient differs from selected version in element.', 'avia_framework' );
+				}
+				return null;
+			}
+
+			return $proceed;
+		}
+
+
+
+
+		/**
+		 * Output options page backend HTML or perform the key verification and return HTML message
+		 *
+		 * @since 4.5.7.2
+		 * @param string $api_key
+		 * @param boolean $ajax
+		 * @param array|boolean|null $check_keys
+		 * @param array $element				used in backend for output of key verification
+		 * @return string|array
+		 */
+		public function backend_html( $api_key = '', $ajax = true, $check_keys = false, $element = array() )
+		{
+			$return = array(
+							'html'                 => '',
+							'update_input_fields'  => array()
+						);
+
+			$api_key = trim( $api_key );
+			$valid_key = false;
+
+			$response_text  = __( 'Could not connect and verify these API Keys with Google reCAPTCHA.', 'avia_framework' );
+			$response_class = "av-notice-error";
+
+			$content_default  =			'<h4>' . esc_html__( 'Troubleshooting:', 'avia_framework' ) . '</h4>';
+			$content_default .=			'<ol>';
+			$content_default .=				'<li>';
+			$content_default .=					esc_html__( 'Check if you typed the keys correctly.', 'avia_framework' );
+			$content_default .=				'</li>';
+			$content_default .=				'<li>';
+			$content_default .=					esc_html__( 'If you use the restriction setting on Google try to remove that, wait a few minutes for google to apply your changes and then check again if the keys work here. If it does, you probably have a syntax error in your referrer url', 'avia_framework' );
+			$content_default .=				'</li>';
+			$content_default .=				'<li>';
+			$content_default .=					esc_html__( 'If none of this helps: deactivate all plugins and then check if the API works by using the button above. If thats the case then one of your plugins is interfering.', 'avia_framework' );
+			$content_default .=				'</li>';
+			$content_default .=			'</ol>';
+
+
+			if( $ajax )
+			{
+				/**
+				 * called by user pressing the ajax check button
+				 */
+				$token = isset( $check_keys['token'] ) ? trim( $check_keys['token'] ) : '';
+				$secretkey = isset( $check_keys['secretkey'] ) ? trim( $check_keys['secretkey'] ) : '';
+				$version = isset( $check_keys['version'] ) ? trim( $check_keys['version'] ) : '';
+				switch( $version )
+				{
+					case 'avia_recaptcha_v2':
+						$verify_field = 'recaptcha_verified_keys_v2';
+						break;
+					case 'avia_recaptcha_v3':
+						$verify_field = 'recaptcha_verified_keys_v3';
+						break;
+					default:
+						$verify_field = '';
+						break;
+				}
+
+				$check = $this->verify_token( $token, $secretkey );
+
+				if( true === $check['success'] )
+				{
+					$valid_key = true;
+					$response_class = '';
+					$response_text  = __( 'We were able to properly connect and verify your API keys with Google reCAPTCHA', 'avia_framework' );
+
+					//will be stripped from the final output but tells the ajax script to save the page after the check was performed
+					$response_text .= ' avia_trigger_save';
+
+					$keys = array(
+									$check_keys['version'],
+									$check_keys['sitekey'],
+									$check_keys['secretkey']
+								);
+					if( ! empty( $verify_field ) )
+					{
+						$return['update_input_fields'][ $verify_field ] = implode( ' ', $keys );
+					}
+				}
+				else
+				{
+					$content_default = '';
+					if( $check instanceof WP_Error )
+					{
+						$response_text = $check->get_error_message();
+					}
+					else
+					{
+						$msg = '';
+
+						if( is_array( $check['error-codes'] ) && count( $check['error-codes'] ) > 0 )
+						{
+							$msg = implode( '<br />', $check['error-codes'] );
+						}
+
+						$response_text  = __( 'Error on connecting to Google reCAPTCHA - please retry.', 'avia_framework' );
+
+						if( ! empty( $msg) )
+						{
+							$response_text .= '<br /><br />' . $msg;
+						}
+					}
+
+					if( ! empty( $verify_field ) )
+					{
+						$return['update_input_fields'][ $verify_field ] = 'verify_error';
+					}
+				}
+			}
+			else
+			{
+				/**
+				 * called on a normal page load. in this case we either show the stored result or if we got no stored result we show nothing
+				 */
+				if( $this->is_activated() )
+				{
+					switch( $element['id'] )
+					{
+						case 'avia_recaptcha_key_verify_v2':
+							$version = 'avia_recaptcha_v2';
+							break;
+						case 'avia_recaptcha_key_verify_v3':
+							$version = 'avia_recaptcha_v3';
+							break;
+						default:
+							$version = '';
+							break;
+					}
+
+					$keys = array(
+									$version,
+									$this->get_site_key( $version ),
+									$this->get_secret_key( $version )
+								);
+
+					$check = implode( ' ', $keys );
+
+					if( $this->get_verified_keys( $version ) == $check )
+					{
+						$valid_key = true;
+					}
+					else if( '' == $this->get_site_key( $version ) && '' == $this->get_secret_key( $version ) )
+					{
+						$response_class = '';
+						$response_text = '';
+					}
+					else if( 'verify_error' == $this->get_verified_keys() )
+					{
+						$response_text  = __( 'A connection error occurred last time we tried verify your keys with Google reCAPTCHA - please revalidate the keys.', 'avia_framework' );
+					}
+					else if( '' == $this->get_verified_keys( $version ) )
+					{
+						$response_text  = __( 'Please verify the keys', 'avia_framework' );
+					}
+					else
+					{
+						$response_text  = __( 'Please verify the keys - the last verified keys are different.', 'avia_framework' );
+					}
+
+					$content_default = '';
+				}
+
+				if( $valid_key )
+				{
+					$response_class = '';
+					$response_text  = __( 'Last time we checked we were able to connected to Google reCAPTCHA with your API keys', 'avia_framework' );
+				}
+			}
+
+			if( $valid_key )
+			{
+				$content_default  = __( 'If you ever change your API key or the URL restrictions of the key please verify the key here again, to test if it works properly','avia_framework');
+			}
+
+			$output  = '';
+
+			if( ! empty( $response_text ) )
+			{
+				$output  =	"<div class='av-verification-response-wrapper'>";
+				$output .=		"<div class='av-text-notice {$response_class}'>";
+				$output .=			$response_text;
+				$output .=		"</div>";
+				$output .=		"<div class='av-verification-cell'>{$content_default}</div>";
+				$output .=	"</div>";
+			}
+
+			if( $ajax )
+			{
+				$return['html'] = $output;
+			}
+			else
+			{
+				$return = $output;
+			}
+
+			return $return;
+		}
+
+	}
 
 	/**
 	 * Returns the main instance of av_google_recaptcha to prevent the need to use globals.
-	 * 
-	 * @since 4.5.4
+	 *
+	 * @since 4.5.7.2
 	 * @return av_google_recaptcha
 	 */
-	function Av_Google_Recaptcha() 
+	function Avia_Google_reCAPTCHA()
 	{
 		return av_google_recaptcha::instance();
 	}
 }
 
-Av_Google_Recaptcha();
+Avia_Google_reCAPTCHA();
+
+
+if( ! function_exists( 'av_recaptcha_api_check' ) )
+{
+	/**
+	 * Callback function:
+	 *		- ajax callback from verification button
+	 *		- php callback when creating output on option page
+	 *
+	 * @since 4.5.7.2
+	 * @param string $value
+	 * @param boolean $ajax
+	 * @param array|null $js_value
+	 * @param array $element
+	 * @return string
+	 */
+	function av_recaptcha_api_check( $value, $ajax = true, $js_value = null, $element = array() )
+	{
+		$api = Avia_Google_reCAPTCHA();
+		return $api->backend_html( $value, $ajax, $js_value, $element );
+	}
+
+}
 

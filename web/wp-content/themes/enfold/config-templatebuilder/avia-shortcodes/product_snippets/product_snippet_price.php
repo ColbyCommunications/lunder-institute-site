@@ -4,16 +4,16 @@
  *
  * Display the price for the current product
  */
-if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
+if( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
 
 
-if( !class_exists( 'woocommerce' ) )
+if( ! class_exists( 'woocommerce' ) )
 {
-    add_shortcode('av_product_price', 'avia_please_install_woo');
+    add_shortcode( 'av_product_price', 'avia_please_install_woo' );
     return;
 }
 
-if ( !class_exists( 'avia_sc_produc_price' ) )
+if( ! class_exists( 'avia_sc_produc_price' ) )
 {
     class avia_sc_produc_price extends aviaShortcodeTemplate
     {
@@ -22,18 +22,18 @@ if ( !class_exists( 'avia_sc_produc_price' ) )
          */
         function shortcode_insert_button()
         {
-            $this->config['self_closing']	=	'yes';
+            $this->config['self_closing']	= 'yes';
 
-            $this->config['name']		= __('Product Price', 'avia_framework' );
-            $this->config['tab']		= __('Plugin Additions', 'avia_framework' );
-            $this->config['icon']		= AviaBuilder::$path['imagesURL']."sc-price.png";
-            $this->config['order']		= 20;
-            $this->config['target']		= 'avia-target-insert';
-            $this->config['shortcode'] 	= 'av_product_price';
-            $this->config['tooltip'] 	= __('Display the price for the current product', 'avia_framework' );
-            $this->config['drag-level'] = 3;
-            $this->config['tinyMCE'] 	= array('disable' => "true");
-            $this->config['posttype'] 	= array('product',__('This element can only be used on single product pages','avia_framework'));
+            $this->config['name']			= __( 'Product Price', 'avia_framework' );
+            $this->config['tab']			= __( 'Plugin Additions', 'avia_framework' );
+            $this->config['icon']			= AviaBuilder::$path['imagesURL'] . 'sc-price.png';
+            $this->config['order']			= 20;
+            $this->config['target']			= 'avia-target-insert';
+            $this->config['shortcode']		= 'av_product_price';
+            $this->config['tooltip']		= __( 'Display the price for the current product', 'avia_framework' );
+            $this->config['drag-level']		= 3;
+            $this->config['tinyMCE']		= array( 'disable' => 'true' );
+            $this->config['posttype']		= array( 'product', __( 'This element can only be used on single product pages', 'avia_framework' ) );
         }
 
 
@@ -46,19 +46,55 @@ if ( !class_exists( 'avia_sc_produc_price' ) )
          * @param array $params this array holds the default values for $content and $args.
          * @return $params the return array usually holds an innerHtml key that holds item specific markup.
          */
-        function editor_element($params)
+        function editor_element( $params )
         {
-            $params['innerHtml'] = "<img src='".$this->config['icon']."' title='".$this->config['name']."' />";
-            $params['innerHtml'].= "<div class='avia-element-label'>".$this->config['name']."</div>";
+			$params = parent::editor_element( $params );
 
-            $params['innerHtml'].= "<div class='avia-flex-element'>";
-            $params['innerHtml'].= 		__( 'Display the price for the current product.', 'avia_framework' );
-            $params['innerHtml'].= "</div>";
+            $params['innerHtml'] .= "<div class='avia-flex-element'>";
+            $params['innerHtml'] .= 		__( 'Display the price for the current product.', 'avia_framework' );
+            $params['innerHtml'] .= '</div>';
 
             return $params;
         }
 
+		/**
+		 * Create custom stylings
+		 *
+		 * @since 4.8.9
+		 * @param array $args
+		 * @return array
+		 */
+		protected function get_element_styles( array $args )
+		{
+			$result = parent::get_element_styles( $args );
 
+			extract( $result );
+
+
+
+			$classes = array(
+						'av-woo-price',
+						$element_id
+					);
+
+			$element_styling->add_classes( 'container', $classes );
+			$element_styling->add_classes_from_array( 'container', $meta, 'el_class' );
+
+			$selectors = array(
+						'container'		=> ".av-woo-price.{$element_id}"
+					);
+
+
+			$element_styling->add_selectors( $selectors );
+
+
+			$result['default'] = $default;
+			$result['atts'] = $atts;
+			$result['content'] = $content;
+			$result['meta'] = $meta;
+
+			return $result;
+		}
 
         /**
          * Frontend Shortcode Handler
@@ -68,14 +104,8 @@ if ( !class_exists( 'avia_sc_produc_price' ) )
          * @param string $shortcodename the shortcode found, when == callback name
          * @return string $output returns the modified html string
          */
-        function shortcode_handler($atts, $content = "", $shortcodename = "", $meta = "")
+        function shortcode_handler( $atts, $content = '', $shortcodename = '', $meta = '' )
         {
-            $output = "";
-            if( ! isset( $meta['el_class'] ) )
-			{
-				$meta['el_class'] = '';
-			}
-			
 			//	fix for seo plugins which execute the do_shortcode() function before everything is loaded
 			global $product;
 			if( ! function_exists( 'WC' ) || ! WC() instanceof WooCommerce || ! is_object( WC()->query ) || ! $product instanceof WC_Product )
@@ -83,10 +113,19 @@ if ( !class_exists( 'avia_sc_produc_price' ) )
 				return '';
 			}
 
-			$output .=	"<div class='av-woo-price {$meta['el_class']}'>";
+			$result = $this->get_element_styles( compact( array( 'atts', 'content', 'shortcodename', 'meta' ) ) );
+
+			extract( $result );
+
+			$style_tag = $element_styling->get_style_tag( $element_id );
+			$container_class = $element_styling->get_class_string( 'container' );
+
+			$output  = '';
+			$output .= $style_tag;
+			$output .= "<div class='{$container_class}'>";
 			$output .=		'<p class="price">' . $product->get_price_html() . '</p>';
-			$output .=	'</div>';
-			
+			$output .= '</div>';
+
 //			//	fix a problem with SEO plugin
 //			if( function_exists( 'wc_clear_notices' ) )
 //			{

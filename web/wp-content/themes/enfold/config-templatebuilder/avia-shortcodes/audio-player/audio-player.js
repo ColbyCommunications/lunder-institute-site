@@ -30,36 +30,52 @@
 	
 	$.fn.aviaPlayer = function( options )
 	{	
-		if( ! this.length ) return; 
+		if( ! this.length ) 
+		{
+			return;
+		} 
 
 		return this.each(function()
 		{
 			var _self 			= {};
 			
-			_self.container		= $( this );
-			_self.stopLoop		= false;
+			_self.container = $( this );
+			_self.stopLoop = false;
 			
-			_self.container.find('audio').on('play', function() {
-									if( _self.stopLoop )
-									{
-										this.pause();
-										_self.stopLoop = false;
-									}
-
-							});
+			_self.container.find('audio').on( 'play', function() 
+			{
+					if( _self.stopLoop )
+					{
+						this.pause();
+						_self.stopLoop = false;
+					}
+			});
 			
 			if( _self.container.hasClass( 'avia-playlist-no-loop' ) )
 			{
-				_self.container.find('audio').on('ended', function() {
-						//	find the last track in the playlist so that when the last track ends we can pause the audio object
-						var lastTrack	= _self.container.find('.wp-playlist-tracks .wp-playlist-item:last a');
+				_self.container.find('audio').on( 'ended', function() 
+				{
+					//	find the last track in the playlist so that when the last track ends we can pause the audio object
+					var lastTrack = _self.container.find('.wp-playlist-tracks .wp-playlist-item').last().find( 'a' );
 
-						if ( this.currentSrc === lastTrack.attr('href') ) {
+					//	fix for non ascii characters in URL
+					try
+					{
+						var lastURI = decodeURI( lastTrack.attr('href') );
+						var currentURI = decodeURI( this.currentSrc );
+						
+						if ( currentURI === lastURI ) 
+						{
 							_self.stopLoop = true;
 						}
-
-					});
-				}
+					}
+					catch( e )
+					{
+						//	in case of a malformed URI continue
+						_self.stopLoop = false;
+					}
+				});
+			}
 			
 			/**
 			 * Limit autostart to the first player with this option set only

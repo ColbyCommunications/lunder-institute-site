@@ -17,25 +17,56 @@
      */
     var avia_google_maps_widget_container = '';
 
-    $(document).ready(function() {
+    $( function()
+	{
+		var widget_id_base = 'avia_google_maps';
+
         $('body').avia_google_maps_options();
 
-        $(document).ajaxSuccess(function(e, xhr, settings){
+		//	Widget Block Editor always adds dynamically
+		$( document ).on( 'widget-added', function ( event, instance )
+		{
+			if( ! $('body').hasClass( 'block-editor-page' ) )
+			{
+				return;
+			}
+				
+			var instance = $( instance );
+			var id = instance.find( 'form input[name="widget-id"]' );
 
-            var widget_id_base = 'avia_google_maps';
+			if( id.length == 0 )
+			{
+				return;
+			}
 
-            if(typeof(settings.data) !== 'undefined' && typeof(settings.data.search) !== 'undefined' && settings.data.search('action=save-widget') !== -1 && settings.data.search('id_base=' + widget_id_base) !== -1)
+			var widget_id = id.val();
+
+			if( widget_id.search( widget_id_base ) < 0 )
+			{
+				return;
+			}
+
+			$('body').avia_google_maps_options( instance );
+		});
+
+		//	Classic widget page callback
+        $(document).ajaxSuccess( function( e, xhr, settings )
+		{
+            if( typeof( settings.data ) !== 'undefined' && typeof( settings.data.search ) !== 'undefined' && settings.data.search( 'action=save-widget' ) !== -1 && settings.data.search( 'id_base=' + widget_id_base ) !== -1 )
             {
                 $('body').avia_google_maps_options();
             }
         });
     });
 
-    $.fn.avia_google_maps_options = function()
+    $.fn.avia_google_maps_options = function( instance )
     {
-        $('.avia-find-coordinates-wrapper,.avia-loading-coordinates').hide();
+		var container = 'undefined' == typeof( instance ) ? $( 'body' ) : $( instance );
 
-        $(".avia-coordinates-help-link").on('click', function( event ) {
+        container.find( '.avia-find-coordinates-wrapper,.avia-loading-coordinates' ).hide();
+
+        container.find( '.avia-coordinates-help-link' ).on( 'click', function( event )
+		{
             event.preventDefault();
 
             avia_google_maps_widget_container = jQuery(this).parents('.widget-content');
@@ -44,7 +75,8 @@
             avia_google_maps_widget_container.find(".avia-find-coordinates-wrapper").show();
         });
 
-        $(".avia-populate-coordinates").click(function( event ) {
+        container.find( '.avia-populate-coordinates' ).on( 'click', function( event )
+		{
             event.preventDefault();
 
             avia_google_maps_widget_container = jQuery(this).parents('.widget-content');

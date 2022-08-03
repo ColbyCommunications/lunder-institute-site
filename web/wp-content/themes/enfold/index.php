@@ -1,5 +1,5 @@
 <?php
-	if ( !defined('ABSPATH') ){ die(); }
+	if( ! defined( 'ABSPATH' ) ){ die(); }
 
 	global $avia_config, $more;
 
@@ -20,11 +20,11 @@
 				$t_sub =  avia_post_meta($blogpage_id, 'subtitle');
 			}
 
-			if(!empty($blogpage_id) && get_post_meta($blogpage_id, 'header', true) != 'no') 
+			if(!empty($blogpage_id) && get_post_meta($blogpage_id, 'header', true) != 'no')
 			{
 				echo avia_title(array('heading'=>'strong', 'title' => $title, 'link' => $t_link, 'subtitle' => $t_sub));
 			}
-			
+
 			do_action( 'ava_after_main_title' );
 	?>
 
@@ -47,16 +47,16 @@
 									'columns'	=> 3,
 									'class'		=> 'avia-builder-el-no-sibling',
 									'paginate'	=> 'yes');
-                        
+
 						/**
 						 * @since 4.5.5
 						 * @return array
 						 */
 						$atts = apply_filters( 'avf_post_slider_args', $atts, 'index' );
-						
+
 						$blog = new avia_post_slider( $atts );
                         $blog->query_entries();
-                        echo "<div class='entry-content-wrapper'>".$blog->html()."</div>";
+                        echo '<div class="entry-content-wrapper">' . $blog->html() . '</div>';
                     }
                     else
                     {
@@ -89,5 +89,5 @@
 
 
 
-<?php 
+<?php
 		get_footer();

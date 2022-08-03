@@ -1,7 +1,10 @@
 /* ======================================================================================================================================================
 ICONGRID
-====================================================================================================================================================== */
 
+@since 4.8.8 following rules have been deprecated because buggy but left in case we reactivate them later ( see also icongrid_old.css for media queries )
+.avia-icongrid-borders-all
+.avia-icongrid-borders-between
+====================================================================================================================================================== */
 
 .avia-icongrid{
     margin: 0;
@@ -37,6 +40,8 @@ ICONGRID
 .avia-icongrid li .avia-icongrid-wrapper{
     position: relative;
     display: block;
+	-webkit-backface-visibility: hidden;   /* new for mobile even to parent container  */
+    backface-visibility: hidden;    /* new for mobile even to parent container  */
 }
 
 .avia-icongrid-borders-all li .avia-icongrid-wrapper:before,
@@ -146,6 +151,14 @@ ICONGRID
     left: 0;
 }
 
+.avia-icongrid-numrow-1 li{
+    width: 100%;
+}
+
+.avia-icongrid-numrow-2 li{
+    width: 50%;
+}
+
 .avia-icongrid-numrow-3 li{
     width: 33.333%;
 }
@@ -170,11 +183,15 @@ ICONGRID
 .avia-icongrid-flipbox li article{
     position: relative;
     display: block;
-    z-index: 3;
+    z-index: 20;				/* 3, changed 4.8 as links not working */
     min-height: 200px;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
+	-webkit-perspective: 1000px;
+	perspective: 1000px;
+	-webkit-transition: -webkit-transform 10.6s;
+    transition: transform 10.6s;
 }
 
 .avia-icongrid-flipbox li .avia-icongrid-front,
@@ -188,6 +205,7 @@ ICONGRID
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     height: 100%;
+    /*width: 100%;*/
 }
 
 .avia-msie-9 .avia-icongrid-flipbox li .avia-icongrid-flipback {
@@ -212,6 +230,30 @@ ICONGRID
     transform: rotateY(-180deg);
 }
 
+.avia-icongrid-flipbox.avia-icongrid-borders-all li .avia-icongrid-front,
+.avia-icongrid-flipbox.avia-icongrid-borders-all li .avia-icongrid-flipback,
+.avia-icongrid-flipbox.avia-icongrid-borders-between li .avia-icongrid-front,
+.avia-icongrid-flipbox.avia-icongrid-borders-between li .avia-icongrid-flipback{
+	margin: 0;
+}
+
+.avia-icongrid-flipbox.avia-icongrid-borders-all li.av-inner-cell-item .avia-icongrid-front,
+.avia-icongrid-flipbox.avia-icongrid-borders-all li.av-inner-cell-item .avia-icongrid-flipback{
+	margin-left: 1px;
+	width: calc( 100% - 1px );
+}
+
+.avia-icongrid-flipbox.avia-icongrid-borders-all li.av-last-cell-item .avia-icongrid-front,
+.avia-icongrid-flipbox.avia-icongrid-borders-all li.av-last-cell-item .avia-icongrid-flipback{
+	margin-left: 1px;
+}
+
+.avia-icongrid-flipbox.avia-icongrid-borders-all li.av-next-cell-row .avia-icongrid-front,
+.avia-icongrid-flipbox.avia-icongrid-borders-all li.av-next-cell-row .avia-icongrid-flipback{
+	margin-top: 1px;
+	height: calc( 100% - 1px );
+}
+
 .avia-icongrid-flipbox li .avia-icongrid-front .avia-icongrid-inner,
 .avia-icongrid-flipbox li .avia-icongrid-flipback .avia-icongrid-inner {
     position: absolute;
@@ -223,13 +265,13 @@ ICONGRID
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
     padding: 4em 3em;
-
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
 }
 
 .avia-icongrid-flipbox li:hover .avia-icongrid-front,
+.avia-icongrid-flipbox li.avia-hover .avia-icongrid-front,
 .avia-icongrid-flipbox li.av-flip .avia-icongrid-front{
     -webkit-transform: rotateY(180deg);
     transform: rotateY(180deg);
@@ -237,18 +279,21 @@ ICONGRID
 
 
 .avia-icongrid-flipbox li:hover .avia-icongrid-flipback,
+.avia-icongrid-flipbox li.avia-hover .avia-icongrid-flipback,
 .avia-icongrid-flipbox li.av-flip .avia-icongrid-flipback{
     -webkit-transform: rotateY(0deg);
     transform: rotateY(0deg);
 }
 
 .avia-msie-9 .avia-icongrid-flipbox li:hover .avia-icongrid-front,
+.avia-msie-9 .avia-icongrid-flipbox li.avia-hover .avia-icongrid-front,
 .avia-msie-9 .avia-icongrid-flipbox li.av-flip .avia-icongrid-front{
     opacity: 0;
     visibility: hidden;
 }
 
 .avia-msie-9 .avia-icongrid-flipbox li:hover .avia-icongrid-flipback,
+.avia-msie-9 .avia-icongrid-flipbox li.avia-hover .avia-icongrid-flipback,
 .avia-msie-9 .avia-icongrid-flipbox li.av-flip .avia-icongrid-flipback {
     opacity: 1;
     visibility: visible;
@@ -342,162 +387,138 @@ ICONGRID
     transform: translateY(0);
 }
 
+
+
+/*** Flip Grid x-axis ***/
+
+
+.avia-flip-x .avia-icongrid-flipbox li .avia-icongrid-front {
+    z-index: 2;
+    -webkit-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+}
+
+.avia-flip-x .avia-icongrid-flipbox li .avia-icongrid-flipback {
+    -webkit-transform: rotateX(-180deg);
+	-ms-transform: rotateX(-180deg);
+    transform: rotateX(-180deg);
+}
+
+
+
+/*** now hover style ***/
+
+.avia-flip-x .avia-icongrid-flipbox li:hover .avia-icongrid-front,
+.avia-flip-x .avia-icongrid-flipbox li.avia-hover .avia-icongrid-front,
+.avia-flip-x .avia-icongrid-flipbox li.av-flip .avia-icongrid-front {
+    -webkit-transform: rotateX(180deg);
+	-ms-transform: rotateX(180deg);
+    transform: rotateX(180deg);
+}
+
+.avia-flip-x .avia-icongrid-flipbox li:hover .avia-icongrid-flipback,
+.avia-flip-x .avia-icongrid-flipbox li.avia-hover .avia-icongrid-flipback,
+.avia-flip-x .avia-icongrid-flipbox li.av-flip .avia-icongrid-flipback {
+    -webkit-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+}
+
+/****  End Flipbox x-axis  ****/
+
+
+
+
+/****  responsive cases  ****/
+
 @media only screen and (max-width: 989px){
 
-    .avia-icongrid-numrow-3 li,
-    .avia-icongrid-numrow-4 li,
-    .avia-icongrid-numrow-5 li{
+	.avia-icongrid.av-flex-cells.av-break-989 li{
+		width: 100%;
+	}
+
+	.avia-icongrid.av-flex-cells.avia-icongrid-numrow-3.av-50-break-989 li,
+    .avia-icongrid.av-flex-cells.avia-icongrid-numrow-4.av-50-break-989 li,
+    .avia-icongrid.av-flex-cells.avia-icongrid-numrow-5.av-50-break-989 li{
         width: 50%;
     }
 
-    .avia-icongrid-borders-all li .avia-icongrid-wrapper:before,
-    .avia-icongrid-borders-between li .avia-icongrid-wrapper:before {
-        display: none;
-    }
+	.av-flex-cells.av-break-989.avia-icongrid-borders-all li .avia-icongrid-wrapper,
+	.av-flex-cells.av-break-989.avia-icongrid-borders-between li .avia-icongrid-wrapper {
+		border-right-width: 0px !important;
+		border-right-style: hidden !important;
+		border-bottom-width: 1px !important;
+		border-bottom-style: solid !important;
+	}
 
-    .avia-icongrid-borders-all li .avia-icongrid-wrapper:after,
-    .avia-icongrid-borders-between li .avia-icongrid-wrapper:after {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        color: inherit;
-        -webkit-box-shadow: 1px 0 0 0, 0 1px 0 0; /* right, bottom */
-        box-shadow: 1px 0 0 0, 0 1px 0 0;
-        z-index: 8;
-    }
-
-    .avia-icongrid-borders-all li:nth-child(2n+2) .avia-icongrid-wrapper:after,
-    .avia-icongrid-borders-between li:nth-child(2n+2) .avia-icongrid-wrapper:after {
-        -webkit-box-shadow: 0 1px 0 0; /* bottom */
-        box-shadow: 0 1px 0 0;
-    }
-
-    .avia-icongrid-borders-all li:last-child .avia-icongrid-wrapper:after,
-    .avia-icongrid-borders-between li:last-child .avia-icongrid-wrapper:after {
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
-
-    .avia-icongrid-borders-all li:nth-child(2n+1):nth-last-child(-n+2) .avia-icongrid-wrapper:after,
-    .avia-icongrid-borders-between li:nth-child(2n+1):nth-last-child(-n+2) .avia-icongrid-wrapper:after{
-        -webkit-box-shadow: 1px 0 0 0; /* right */
-        box-shadow: 1px 0 0 0;
-    }
-
+	.av-flex-cells.av-break-989.avia-icongrid-borders-all li:nth-child(odd) .avia-icongrid-wrapper,
+	.av-flex-cells.av-break-989.avia-icongrid-borders-between li:nth-child(odd) .avia-icongrid-wrapper {
+		border-right-width: 0px !important;
+		border-right-style: hidden !important;
+	}
 }
 
 @media only screen and (max-width: 767px) {
 
-    .avia-icongrid-numrow-3 li,
-    .avia-icongrid-numrow-4 li,
-    .avia-icongrid-numrow-5 li {
-        width: 100%;
-    }
+	.avia-icongrid.av-flex-cells.avia-icongrid-numrow-3.av-50-break-767 li,
+    .avia-icongrid.av-flex-cells.avia-icongrid-numrow-4.av-50-break-767 li,
+    .avia-icongrid.av-flex-cells.avia-icongrid-numrow-5.av-50-break-767 li{
+		width: 50%;
+	}
 
-    .avia-icongrid-borders-all li .avia-icongrid-wrapper,
-    .avia-icongrid-borders-between li .avia-icongrid-wrapper {
-        border-right-width: 0px !important;
-        border-right-style: hidden !important;
-        border-bottom-width: 1px !important;
-        border-bottom-style: solid !important;
-    }
+	.avia-icongrid.av-flex-cells.av-break-767 li,
+	.avia-icongrid.av-flex-cells.avia-icongrid-numrow-3.av-50-break-989 li,
+    .avia-icongrid.av-flex-cells.avia-icongrid-numrow-4.av-50-break-989 li,
+    .avia-icongrid.av-flex-cells.avia-icongrid-numrow-5.av-50-break-989 li{
+		width: 100%;
+	}
 
-    .avia-icongrid-borders-all li:nth-child(odd) .avia-icongrid-wrapper,
-    .avia-icongrid-borders-between li:nth-child(odd) .avia-icongrid-wrapper {
-        border-right-width: 0px !important;
-        border-right-style: hidden !important;
-    }
+	.av-flex-cells.av-break-767.avia-icongrid-borders-all li .avia-icongrid-wrapper,
+	.av-flex-cells.av-break-767.avia-icongrid-borders-between li .avia-icongrid-wrapper {
+		border-right-width: 0px !important;
+		border-right-style: hidden !important;
+		border-bottom-width: 1px !important;
+		border-bottom-style: solid !important;
+	}
 
-    .avia-icongrid-flipbox li:hover .avia-icongrid-front,
-    .avia-icongrid-flipbox li.av-flip .avia-icongrid-front,
-    .avia-icongrid-flipbox li:hover .avia-icongrid-flipback,
-    .avia-icongrid-flipbox li.av-flip .avia-icongrid-flipback{
-        -webkit-transform: none;
-        -ms-transform: none;
-        transform: none;
-    }
+	.av-flex-cells.av-break-767.avia-icongrid-borders-all li:nth-child(odd) .avia-icongrid-wrapper,
+	.av-flex-cells.av-break-767.avia-icongrid-borders-between li:nth-child(odd) .avia-icongrid-wrapper {
+		border-right-width: 0px !important;
+		border-right-style: hidden !important;
+	}
 
-    .avia-icongrid li .avia-icongrid-wrapper:before{
-        display: none;
-    }
+	.avia-icongrid-tooltip li article{
+		padding: 4em 3em;
+	}
 
-    .avia-icongrid-flipbox li .avia-icongrid-front{
-        position: relative;
-        height: auto;
-        top: auto;
-        bottom: auto;
-        -webkit-transform: none;
-        -ms-transform: none;
-        transform: none;
-    }
+	.avia-icongrid-tooltip li:hover .avia-icongrid-front,
+	.avia-icongrid-tooltip li .avia-icongrid-front {
+		position: relative;
+		top: auto;
+		bottom: auto;
+		-webkit-transform: none;
+		-ms-transform: none;
+		transform: none;
+	}
 
-    .avia-icongrid-flipbox li .avia-icongrid-content{
-        display: none;
-    }
+	.avia-icongrid-tooltip li:hover .avia-icongrid-front {
+		bottom: 0.5em;
+		-webkit-transform: translateY(50%);
+		-ms-transform: translateY(50%);
+		transform: translateY(50%);
+	}
 
-    .avia-icongrid-flipbox li .avia-icongrid-flipback {
-        position: relative;
-        height: auto;
-        top: auto;
-        bottom: auto;
-        -webkit-transform: none;
-        -ms-transform: none;
-        transform: none;
-    }
+	.avia-icongrid-tooltip li .avia-icongrid-content:after{
+		bottom: auto;
+		top: -0.75em;
+		border-top: 0.3em solid rgba(0,0,0,0.07);
+		border-left: 0.3em solid rgba(0,0,0,0.07);
+		border-bottom: 0;
+		border-right: 0;
+	}
 
-    .avia-icongrid-flipbox li .avia-icongrid-front .avia-icongrid-inner,
-    .avia-icongrid-flipbox li .avia-icongrid-flipback .avia-icongrid-inner {
-        position: relative;
-        height: auto;
-        top: auto;
-        bottom: auto;
-        -webkit-transform: none;
-        -ms-transform: none;
-        transform: none;
-    }
-
-    .avia-icongrid-flipbox li .avia-icongrid-front .avia-icongrid-inner{
-        padding: 4em 3em;
-    }
-
-    .avia-icongrid-tooltip li article{
-        padding: 4em 3em;
-    }
-
-    .avia-icongrid-tooltip li:hover .avia-icongrid-front,
-    .avia-icongrid-tooltip li .avia-icongrid-front {
-        position: relative;
-        top: auto;
-        bottom: auto;
-        -webkit-transform: none;
-        -ms-transform: none;
-        transform: none;
-    }
-
-    .avia-icongrid-tooltip li:hover .avia-icongrid-content,
-    .avia-icongrid-tooltip li .avia-icongrid-content {
-        position: relative;
-        top: auto;
-        bottom: auto;
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .avia-icongrid-tooltip li .avia-icongrid-content:after{
-        bottom: auto;
-        top: -0.75em;
-        border-top: 0.3em solid rgba(0,0,0,0.07);
-        border-left: 0.3em solid rgba(0,0,0,0.07);
-        border-bottom: 0;
-        border-right: 0;
-
-    }
-
-    .avia-icongrid-tooltip li article:before{
-        display: none;
-
-    }
+	.avia-icongrid-tooltip li article:before{
+		display: none;
+	}
 }
