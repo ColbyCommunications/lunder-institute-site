@@ -23,7 +23,7 @@
         "vlucas/phpdotenv": "^5.4",
         "wpackagist-plugin/classic-widgets": "0.3",
         "wpackagist-plugin/instagram-feed": "1.12",
-        "wpackagist-plugin/popup-maker": "1.18.2",
+        "wpackagist-plugin/popup-maker": "1.19.0",
         "wpackagist-plugin/wp-nested-pages": "3.2.8",
         "wpackagist-plugin/disable-comments": "2.4.6"
     },

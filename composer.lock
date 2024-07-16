@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "081f5773ae1205d5854bc6670315eafe",
+    "content-hash": "af4fcb331badbe7d0557364da253b556",
     "packages": [
         {
             "name": "colbycommunications/advanced-custom-fields-pro",
@@ -5531,15 +5531,15 @@
         },
         {
             "name": "wpackagist-plugin/popup-maker",
-            "version": "1.18.2",
+            "version": "1.19.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/popup-maker/",
-                "reference": "tags/1.18.2"
+                "reference": "tags/1.19.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/popup-maker.1.18.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/popup-maker.1.19.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
