@@ -25,7 +25,8 @@
         "wpackagist-plugin/instagram-feed": "1.12",
         "wpackagist-plugin/popup-maker": "1.18.2",
         "wpackagist-plugin/wp-nested-pages": "3.2.7",
-        "wpackagist-plugin/disable-comments": "2.4.5"
+        "wpackagist-plugin/disable-comments": "2.4.5",
+        "colbycommunications/wp-all-export-pro": "1.9.2"
     },
     "authors": [
         {
